@@ -1,0 +1,364 @@
+<style scoped lang="less" rel="stylesheet/less">
+  @import "../../styles/common";
+  .m-index{
+    width: 100%;
+    background-color: #fff;
+    height: 100%;
+    .m-top{
+      width: 100%;
+      height: 100rpx;
+      color: #fff;
+      .flex-row(center);
+      font-size: 32rpx;
+      .m-search-box{
+        width: 90%;
+        height: 50rpx;
+        .flex-row(center);
+        border-radius: 20px;
+        background-color: #fafafa;
+        color: #ABABAB;
+        font-size: 24rpx;
+      }
+    }
+    .m-title-page{
+      position: relative;
+      width: 100%;
+      height: 140rpx;
+      text-align: center;
+      background-color: transparent;
+      .m-title-back{
+        width: 100%;
+        height: 140rpx;
+        /*position: absolute;*/
+        /*top: 0;*/
+        /*left: 0;*/
+        /*z-index: 0;*/
+      }
+      .m-title{
+        line-height: 140rpx;
+        font-size: 40rpx;
+        z-index: 100;
+        color: #fff;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        text-align: center;
+      }
+    }
+    .m-nav-box{
+      .flex-row(space-around);
+      font-size: 24rpx;
+      margin-bottom: 17rpx;
+      .m-nav-one{
+        width: 104rpx;
+        text-align: center;
+        image{
+          width: 104rpx;
+          height: 104rpx;
+        }
+      }
+    }
+    .m-index-content{
+      padding: 0 20rpx ;
+      width: 710rpx;
+      .m-content-title{
+        width: 676rpx;
+        height: 35rpx;
+        line-height: 35rpx;
+        margin-left: 24rpx;
+        margin-top: 30rpx;
+        margin-bottom: 30rpx;
+        .flex-row(space-between);
+        border-left: 10rpx solid @common-color;
+        font-size: 20rpx;
+        .m-title-name{
+          font-size: 30rpx;
+          font-weight: bold;
+          margin-left: 40rpx;
+          color: #000;
+        }
+        .m-icon-more{
+          width: 24rpx;
+          height:24rpx;
+        }
+      }
+      .m-content-content{
+        .m-one-content{
+          width: 705rpx;
+          height: 250rpx;
+          display: flex;
+          flex-flow: row;
+          align-items: flex-start;
+          justify-content: flex-start;
+          box-shadow:0px 5px 20px rgba(0,0,0,0.16);
+          border-radius:20rpx;
+          margin-bottom: 20rpx;
+          image{
+            width: 250rpx;
+            height: 250rpx;
+            border-top-left-radius: 20rpx;
+            border-bottom-left-radius: 20rpx;
+            margin-right: 14rpx;
+            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+            overflow : hidden;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+          .m-one-content-h{
+            font-size: 28rpx;
+            height: 80rpx;
+            margin: 18rpx 0 ;
+            font-weight: bold;
+          }
+          .m-one-content-p{
+            font-size: 24rpx;
+            color: #B1B1B1;
+            margin: 18rpx 0 ;
+          }
+        }
+      }
+      .m-index-scroll{
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        height: 300rpx;
+        .m-scroll-one{
+          width: 320rpx;
+          margin-right: 20rpx;
+          font-size: 24rpx;
+          display: inline-block;
+          image{
+            width: 320rpx;
+            height: 180rpx;
+            border-radius: 20rpx;
+          }
+          .m-scroll-name{
+            white-space:normal;
+            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+            overflow : hidden;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            height: 63rpx;
+          }
+        }
+      }
+
+    }
+  }
+
+</style>
+<template>
+  <view class="m-index">
+    <view class="m-top">
+      <view class="m-search-box" >
+        <image class="m-icon-search" style="width: 30rpx;height:30rpx;margin: 0 20rpx;" src="../../images/icon-search.png" />
+       <p>搜索项目</p>
+      </view>
+    </view>
+    <swiper
+            indicator-dots="{{indicatorDots}}"
+            autoplay="{{autoplay}}"
+            interval="{{interval}}"
+            duration="{{duration}}"
+    >
+      <block wx:for="{{imgUrls}}">
+        <swiper-item>
+          <image src="{{item}}" class="slide-image" style="width: 750rpx;height: 300rpx;" />
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <view class="m-title-page">
+      <image src="../../images/icon-title-bc.png" class="m-title-back"></image>
+      <view class="m-title">兑换满减券</view>
+    </view>
+
+    <view class="m-nav-box">
+      <view class="m-nav-one">
+        <image src="../../images/appointment.png"></image>
+        <view>检测预约</view>
+      </view>
+      <view class="m-nav-one">
+        <image src="../../images/knowledge.png"></image>
+        <view>科学知识</view>
+      </view>
+      <view class="m-nav-one">
+        <image src="../../images/feedback.png"></image>
+        <view>用户反馈</view>
+      </view>
+    </view>
+    <view class="m-index-content">
+        <view class="m-content-title">
+          <view class="m-title-name">体检项目</view>
+          <view>
+            <span>查看更多</span>
+            <image src="../../images/icon-more.png" class="m-icon-more"></image>
+          </view>
+        </view>
+
+      <view class="m-content-content">
+
+        <view class="m-one-content">
+          <image src="../../images/swide.png"></image>
+          <view>
+            <view class="m-one-content-h">
+              血常规基础套餐
+            </view>
+            <view class="m-one-content-p">适用人群：所有人群</view>
+          </view>
+        </view>
+        <view class="m-one-content">
+          <image src="../../images/swide.png"></image>
+          <view>
+            <view class="m-one-content-h">
+              血常规基础套餐
+            </view>
+            <view class="m-one-content-p">适用人群：所有人群</view>
+          </view>
+        </view>
+      </view>
+      <view class="m-content-title">
+        <view class="m-title-name">科学知识</view>
+        <view>
+          <span>查看更多</span>
+          <image src="../../images/icon-more.png" class="m-icon-more"></image>
+        </view>
+      </view>
+
+      <scroll-view
+              scroll-x="true"
+              class="m-index-scroll"
+              style="height:300rpx;white-space:nowrap;"
+              upper-threshold="0"
+              lower-threshold="0"
+      >
+        <view class="m-scroll-one">
+          <image src="../../images/swide.png"></image>
+          <view class="m-scroll-name">癌症可以避免吗？
+            精准来指导，癌症不找您！癌症可以避免吗？
+            精准来指导，癌症不找您！</view>
+        </view>
+        <view class="m-scroll-one">
+          <image src="../../images/swide.png"></image>
+          <view class="m-scroll-name">癌症可以避免吗？
+            精准来指导，癌症不找您！</view>
+        </view>
+        <view class="m-scroll-one">
+          <image src="../../images/swide.png"></image>
+          <view class="m-scroll-name">癌症可以避免吗？
+            精准来指导，癌症不找您！</view>
+        </view>
+      </scroll-view>
+    </view>
+
+
+  </view>
+</template>
+
+<script >
+  import wepy from 'wepy';
+  import api from '../../api/api';
+  import tip from '../../utils/tip';
+  import onfire from 'onfire.js';
+
+
+  export default class IndexIndex extends wepy.page {
+    config = {
+      navigationBarTitleText: '太铭生物',
+        enablePullDownRefresh:true
+    }
+    components = {
+
+    }
+    data = {
+        imgUrls: [
+            '../../images/swide.png',
+            '../../images/swide.png',
+            '../../images/swide.png'
+        ],
+        indicatorDots: true,
+        autoplay: false,
+        interval: 3000,
+        duration: 1000,
+      work_list:[],
+        toView: 'red',
+        scrollTop: 100,
+        page_info:{cur_page:0, page_size: 5, total_items: 2, total_pages: 1},
+    }
+    // async getWorkList(sess_key,areano) {
+    //   let that = this;
+    //      tip.loading();
+    //     let res = await api.login({method:'POST',query:{
+    //             sess_key: sess_key,
+    //             is_rec:1,
+    //             areano:areano || "",
+    //             page:Number(that.page_info.cur_page) +1 || 1,
+    //             page_size:that.page_info.page_size
+    //         }});
+    //     if(res.data.error_code == 0 ){
+    //
+    //         that.$apply();
+    //         tip.loaded();
+    //     }else{
+    //         tip.error(res.data.error_msg);
+    //     }
+    // }
+
+    // onLoad(options){
+    //    var _this = this;
+    //    if(options.scene){
+    //        var sence = decodeURIComponent(options.scene);
+    //    }
+    //     onfire.on('search', function (args) {
+    //         _this.select_city =  args.inputVal ;
+    //         wx.getStorage({
+    //             key: 'sess_key',
+    //             success: function(res){
+    //                 // _this.getWorkList(res.data,_this.select_city.areano);
+    //             }
+    //         });
+    //     });
+    //
+    // }
+    //   onPullDownRefresh(){
+    //       wx.stopPullDownRefresh();
+    //   }
+    //   onReachBottom(){
+    //       var _this = this;
+    //       if(_this.page_info.cur_page == _this.page_info.total_pages){
+    //           wx.showToast({ //如果全部加载完成了也弹一个框
+    //               title: '我也是有底线的',
+    //               icon: 'success',
+    //               duration: 300
+    //           });
+    //       }else{
+    //           wx.getStorage({
+    //               key: 'sess_key',
+    //               success: function(res){
+    //                   // _this.getWorkList(res.data,_this.select_city.areano);
+    //               }
+    //           });
+    //       }
+    //   }
+    methods = {
+      inputTap(){
+        // wx.navigateTo({
+        //   url: '/pages/index/search'
+        // });
+      },
+        upper(e) {
+            console.log(e)
+        },
+        lower(e) {
+            console.log(e)
+        },
+        scroll(e) {
+            console.log(e)
+        },
+    }
+  }
+</script>

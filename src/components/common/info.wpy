@@ -1,0 +1,155 @@
+<style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common.less";
+    .m-info-box{
+        width: 100%;
+        background-color: #fff;
+        .flex-row(center);
+        padding: 20rpx 0;
+        border-bottom: 0.6px solid #eee;
+        &:last-child{
+            border-bottom: none;
+        }
+        .m-info-img{
+            width: 120rpx;
+            height: 120rpx;
+            margin-right: 20rpx;
+        }
+        .m-info-right{
+            width: 550rpx;
+            .m-info-tr1{
+                .flex-row(space-between);
+                .m-info-td1{
+                    /*width: 378rpx;*/
+                    display: flex;
+                    flex-flow: row;
+                    align-items: center;
+                    .m-name{
+                        font-size: 32rpx;
+                        /*margin-right: 10rpx;*/
+                    }
+                    .m-tabs{
+                        display: flex;
+                        flex-flow: row;
+                        font-size: 20rpx;
+                        .m-tab{
+                            color: #fff;
+                            background-color: #F96969;
+                            border-radius: 3px;
+                            padding: 10rpx 8rpx;
+                            margin-left: 10rpx;
+                        }
+                    }
+                }
+                .m-price{
+                    font-size: 28rpx;
+                    color: #F96969 ;
+                }
+            }
+            .m-info-tr2{
+                .flex-row(space-between);
+                .m-name{
+                    font-size: 24rpx;
+                    color: #5B5B5B;
+                }
+                .m-time{
+                    font-size: 24rpx;
+                    color: #868E9E;
+                }
+            }
+            .m-info-tr3{
+                .flex-row(space-between);
+                .m-name{
+                    font-size: 24rpx;
+                    color: #868E9E;
+                    margin-left: 10rpx;
+                    margin-right: 20rpx;
+                    &.m-name-first{
+                        padding-right: 20rpx;
+                        margin: 0;
+                        border-right: 1rpx solid #eee;
+                    }
+                }
+                .m-time{
+                    font-size: 24rpx;
+                    color: #868E9E;
+                }
+                .m-link{
+                    font-size: 20rpx;
+                    color: #4E82F6;
+                }
+                .m-btn{
+                    font-size: 24rpx;
+                    padding: 5rpx 20rpx;
+                    border: 1px solid #4E82F6;
+                    color: #4E82F6;
+                    border-radius: 7px;
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+</style>
+
+<template>
+    <view class="m-info-box" @tap="tap({{list}})">
+        <image class="m-info-img" src="{{list.pic_env}}"/>
+        <view class="m-info-right">
+            <view class="m-info-tr1">
+                <view class="m-info-td1">
+                    <p class="m-name">{{list.name}}</p>
+                    <view class="m-tabs">
+                        <view class="m-tab" wx:if="{{list.reward}}">入职奖{{list.reward}}</view>
+                        <view class="m-tab" wx:if="{{list.reward_up}}">推荐奖{{list.reward_up}}</view>
+                    </view>
+                </view>
+                <view class="m-info-td2">
+                    <p class="m-price" wx:if="{{list.mini_salary}}">¥{{list.mini_salary}}-{{list.max_salary}}</p>
+                </view>
+            </view>
+            <view class="m-info-tr2">
+                <view class="m-info-td1">
+                    <p class="m-name">嘉兴闻泰集团</p>
+                </view>
+            </view>
+            <view class="m-info-tr3">
+                <view class="m-info-td1">
+                    <p class="m-name m-name-first" wx:if="{{list.city_name}}">{{list.city_name}}</p>
+                    <p class="m-name" wx:if="{{list.keyword1}}">{{list.keyword1}}</p>
+                    <p class="m-name" wx:if="{{list.keyword2}}">{{list.keyword2}}</p>
+                    <p class="m-name" wx:if="{{list.address}}">北部软件园创意园B5栋2楼</p>
+                </view>
+                <view class="m-info-td2">
+                    <p class="m-time" wx:if="{{list.update_at}}">{{list.update_at}}</p>
+                    <p class="m-time" wx:if="{{list.train_time}}">{{list.train_time}}</p>
+                    <!--<p class="m-link">取消收藏</p>-->
+                    <!--<view class="m-btn">面试</view>-->
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script >
+    import wepy from 'wepy';
+    import tip from '../../utils/tip';
+    import api from '../../api/api';
+    export default class Info extends wepy.page{
+        props = {
+            list:{
+                type:Object,
+                default:null
+            }
+        }
+        data = {
+
+        }
+        onLoad(){
+            console.log(this.list);
+        }
+        methods = {
+            tap(v){
+                this.$emit('infoTap',v);
+            }
+        }
+
+    }
+</script>

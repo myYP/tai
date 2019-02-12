@@ -1,0 +1,106 @@
+<template>
+    <view class="m-physical">
+        <view class="m-content-title">
+            <view class="m-title-name">我要体检</view>
+        </view>
+        <view class="m-physical-list">
+            <view class="m-one-physical">
+                <image src="../../images/icon-man.png"></image>
+                <span>某一</span>
+            </view>
+            <view class="m-one-physical">
+                <image src="../../images/icon-man.png"></image>
+                <span>某一</span>
+            </view>
+            <view class="m-one-physical">
+                <image src="../../images/icon-woman.png"></image>
+                <span>某一</span>
+            </view>
+        </view>
+        <view class="m-add-physical">
+            <view class="m-content-title">
+                <view class="m-title-name">添加体检者</view>
+            </view>
+            <view class="m-physical-sex">
+                <view class="m-one-sex">
+                   <image src="../../images/icon-man.png"></image>
+                    <view>男</view>
+                </view>
+                <view class="m-one-sex m-woman">
+                    <image src="../../images/icon-woman.png"></image>
+                    <view>女</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class Login extends wepy.page {
+        config = {
+            navigationBarTitleText: '预约体检'
+        }
+        data = {}
+        methods = {}
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
+    .m-physical{
+        .m-content-title{
+            width: 676rpx;
+            height: 35rpx;
+            line-height: 35rpx;
+            margin-left: 24rpx;
+            margin-top: 30rpx;
+            margin-bottom: 30rpx;
+            .flex-row(space-between);
+            border-left: 10rpx solid @common-color;
+            font-size: 20rpx;
+            .m-title-name{
+                font-size: 30rpx;
+                font-weight: bold;
+                margin-left: 40rpx;
+                color: #000;
+            }
+        }
+        .m-physical-list{
+            background-color: #fafafa;
+            .m-one-physical{
+                background-color: #fff;
+                height: 150rpx;
+                .flex-row(flex-start);
+                margin-bottom: 20rpx;
+                font-size: 28rpx;
+                image{
+                    width: 87rpx;
+                    height: 87rpx;
+                    margin: 0 40rpx;
+                }
+            }
+        }
+        .m-add-physical{
+            background-color: #fff;
+            width: 100%;
+            padding: 25rpx 0;
+            font-size: 24rpx;
+            .m-physical-sex{
+                .flex-row(center);
+                .m-one-sex{
+                    width: 200rpx;
+                    text-align: center;
+                    color: #57B2E2;
+                    &.m-woman{
+                        margin-left: 80rpx;
+                        color: #E66A8C;
+                    }
+                }
+                image{
+                    width: 200rpx;
+                    height: 200rpx;
+                }
+            }
+        }
+    }
+</style>

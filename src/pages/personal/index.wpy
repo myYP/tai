@@ -1,0 +1,221 @@
+<style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common.less";
+.m-personal{
+    .m-avatar-content{
+        width: 100%;
+        height:200rpx;
+        background:linear-gradient(90deg,rgba(255,123,131,1) 0%,rgba(193,0,13,1) 100%);
+        .content{
+            width: 100%;
+            height:200rpx;
+            .flex-row(flex-start);
+            font-size: 30rpx;
+            color: #fff;
+            position: relative;
+            .avatar{
+                width: 150rpx;
+                height: 150rpx;
+                border-radius: 50%;
+                border: 2px solid #fff;
+                margin: 0 25rpx;
+            }
+            .m-icon-set{
+                position: absolute;
+                top: 20rpx;
+                right: 20rpx;
+                width: 36rpx;
+                height: 36rpx;
+            }
+        }
+    }
+    .m-personal-content{
+        .m-content-title{
+            width: 720rpx;
+            height: 35rpx;
+            line-height: 35rpx;
+            margin-top: 30rpx;
+            margin-bottom: 30rpx;
+            .flex-row(space-between);
+            font-size: 24rpx;
+            .m-icon-title{
+                width: 24rpx;
+                height: 24rpx;
+                margin-right: 25rpx;
+            }
+            .m-title-name{
+                font-size: 30rpx;
+                font-weight: bold;
+                margin-left: 40rpx;
+                color: #000;
+            }
+            .m-icon-more{
+                width: 24rpx;
+                height:24rpx;
+            }
+            &.m-white{
+                height: 100rpx;
+                margin-bottom: 20rpx;
+                background-color: #fff;
+                padding-right: 25rpx;
+            }
+        }
+        .m-order-list{
+            .flex-row(space-around);
+            font-size: 24rpx;
+            margin: 20rpx 0;
+            image{
+                width: 60rpx;
+                height: 60rpx;
+            }
+            .m-order-one{
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                .m-num{
+                    position: absolute;
+                    top: -16rpx;
+                    right:-8rpx;
+                    width: 32rpx;
+                    height: 32rpx;
+                    border-radius: 50%;
+                    border: 2rpx solid @common-color;
+                    color: @common-color;
+                    text-align: center;
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+}
+</style>
+
+<template>
+    <view class="m-personal">
+        <view class="m-avatar-content">
+            <view class="content">
+                <image class="avatar" src="http://120.76.230.93:8063/Upload/2017/1123/20171123115952981_img.png" />
+                <view class="name">username</view>
+                <image src="../../images/icon-set.png" class="m-icon-set"></image>
+            </view>
+        </view>
+        <view class="m-personal-content">
+
+            <view class="m-content-title ">
+                <view class="m-title-name">
+                    <image src="../../images/icon-car.png" class="m-icon-title"></image>
+                    <span>订单状态</span></view>
+                <view>
+                    <image src="../../images/icon-more.png" class="m-icon-more"></image>
+                </view>
+            </view>
+            <view class="m-order-list ">
+                <view class="m-order-one" wx:for="{{order_icon}}">
+                    <view class="m-num" wx:if="{{item.num > 0}}">{{item.num}}</view>
+                    <image src="{{item.icon}}"></image>
+                    <view>{{item.name}}</view>
+                </view>
+            </view>
+            <view class="m-content-title m-white">
+                <view class="m-title-name">
+                    <image src="../../images/icon-card.png" class="m-icon-title"></image>
+                    <span>满减券</span></view>
+                <view>
+                    <image src="../../images/icon-more.png" class="m-icon-more"></image>
+                </view>
+            </view>
+            <view class="m-content-title m-white">
+                <view class="m-title-name">
+                    <image src="../../images/icon-service.png" class="m-icon-title"></image>
+                    <span>联系客服 </span></view>
+                <view>
+                    <image src="../../images/icon-more.png" class="m-icon-more"></image>
+                </view>
+            </view>
+
+
+        </view>
+    </view>
+</template>
+<script >
+    import wepy from 'wepy';
+    import tip from '../../utils/tip';
+    import api from '../../api/api';
+    export default class personalIndex extends wepy.page{
+        config = {
+            navigationBarTitleText: '我的'
+        }
+        data = {
+            order_icon:[{
+                    icon:'../../images/icon-send.png',
+                    name:'已寄出',
+                    url:'',
+                    num:2
+                },
+                {
+                    icon:'../../images/icon-receive.png',
+                    name:'已收到',
+                    url:'',
+                    num:0
+                },
+                {
+                    icon:'../../images/icon-analyze-doing.png',
+                    name:'分析中',
+                    url:'',
+                    num:2
+                },
+                {
+                    icon:'../../images/icon-analyze-deno.png',
+                    name:'分析毕',
+                    url:'',
+                    num:0
+                },
+                {
+                    icon:'../../images/icon-done.png',
+                    name:'已完成',
+                    url:'',
+                    num:0
+                }
+            ],
+            userData: {}
+        }
+        // // 获取个人资料
+        // async getuserInfo(sess_key) {
+        //     let that = this;
+        //     tip.loading();
+        //         let res = await api.userInfo({method:'POST', query:{
+        //                 sess_key:sess_key
+        //             }})
+        //         if(res.data.error_code == '0'){
+        //             that.userData = res.data.bizobj.data;
+        //             that.$apply()
+        //             tip.loaded()
+        //         }else{
+        //             tip.error(res.data.message)
+        //         }
+        // }
+        // onLoad(){
+        //     var _this = this;
+        //     wx.getStorage({
+        //         key: 'sess_key',
+        //         success: function(res){
+        //             _this.getuserInfo(res.data);
+        //         }
+        //     });
+        // }
+        methods = {
+            goUrl(url){
+                wx.navigateTo({
+                    url: '/pages/'+url
+                })
+            },
+            goWork(){
+                wx.switchTab({
+                    url: '/pages/work/index'
+                })
+            }
+        }
+
+    }
+</script>
