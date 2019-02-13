@@ -1,0 +1,94 @@
+<template>
+    <view class="m-addPhysical">
+        <view class="m-one-content">
+            <view class="m-icon-name">
+                <image src="../../images/icon-name.png"></image>
+                <span>姓名</span>
+            </view>
+            <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                <view class="picker">
+                    {{array[index]}}
+                </view>
+            </picker>
+        </view>
+        <view class="m-one-content">
+            <view class="m-icon-name">
+                <image src="../../images/icon-tel.png"></image>
+                <span>手机号码</span>
+            </view>
+            <input value="{{telephone}}" class="picker" type="number"/>
+        </view>
+        <view class="m-one-content">
+            <view class="m-icon-name">
+                <image src="../../images/icon-date.png"></image>
+                <span>出生年月</span>
+            </view>
+            <picker
+                    mode="date"
+                    value="{{date}}"
+                    start="2015-09-01"
+                    end="2017-09-01"
+                    bindchange="bindDateChange"
+            >
+                <view class="picker">
+                    {{date}}
+                </view>
+            </picker>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class addPhysical extends wepy.page {
+        config = {
+            navigationBarTitleText: '添加体检者'
+        }
+        data = {
+            array: ['美国', '中国', '巴西', '日本'],
+            index:0,
+            telephone:15700000000,
+            date: '2016-09-01',
+        }
+        methods = {
+            bindPickerChange(e) {
+                console.log('picker发送选择改变，携带值为', e.detail.value)
+                this.setData({
+                    index: e.detail.value
+                })
+            },
+            bindDateChange(e) {
+                console.log('picker发送选择改变，携带值为', e.detail.value)
+                this.setData({
+                    date: e.detail.value
+                })
+            },
+        }
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
+    .m-addPhysical{
+        font-size: 28rpx;
+        .m-one-content{
+            background-color: #fff;
+            .flex-row(space-between);
+            padding: 0 24rpx;
+            height: 100rpx;
+            margin-bottom: 20rpx;
+            .m-icon-name{
+                .flex-row(flex-start);
+                image{
+                    width: 24rpx;
+                    height: 24rpx;
+                    margin-right: 24rpx;
+                }
+            }
+            .picker{
+                width: 300rpx;
+                color: #989898;
+                text-align: right;
+            }
+        }
+    }
+</style>

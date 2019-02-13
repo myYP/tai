@@ -165,7 +165,7 @@
             interval="{{interval}}"
             duration="{{duration}}"
     >
-      <block wx:for="{{imgUrls}}">
+      <block wx:for="{{imgUrls}}" wx:key="item">
         <swiper-item>
           <image src="{{item}}" class="slide-image" style="width: 750rpx;height: 300rpx;" />
         </swiper-item>
@@ -199,9 +199,7 @@
             <image src="../../images/icon-more.png" class="m-icon-more"></image>
           </view>
         </view>
-
       <view class="m-content-content">
-
         <view class="m-one-content">
           <image src="../../images/swide.png"></image>
           <view>
@@ -228,7 +226,6 @@
           <image src="../../images/icon-more.png" class="m-icon-more"></image>
         </view>
       </view>
-
       <scroll-view
               scroll-x="true"
               class="m-index-scroll"

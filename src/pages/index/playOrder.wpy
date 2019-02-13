@@ -1,0 +1,18 @@
+<template>
+    <view>
+        确认订单
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class playOrder extends wepy.page {
+        config = {
+            navigationBarTitleText: '确认订单'
+        }
+        data = {}
+        methods = {}
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+</style>

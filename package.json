@@ -18,9 +18,12 @@
   "license": "MIT",
   "dependencies": {
     "asap": "^2.0.6",
+    "assert": "^1.4.1",
     "cluster": "^0.7.7",
     "crypto": "^1.0.1",
     "domain": "0.0.1",
+    "events": "^3.0.0",
+    "fs": "0.0.1-security",
     "onfire.js": "^1.0.6",
     "promise-polyfill": "^6.0.2",
     "raw-body": "^2.3.3",

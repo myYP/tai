@@ -1,0 +1,18 @@
+<template>
+    <view>
+        体检报告
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class report extends wepy.page {
+        config = {
+            navigationBarTitleText: '体检报告'
+        }
+        data = {}
+        methods = {}
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+</style>

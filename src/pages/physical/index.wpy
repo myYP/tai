@@ -22,7 +22,7 @@
                 <view class="m-title-name">添加体检者</view>
             </view>
             <view class="m-physical-sex">
-                <view class="m-one-sex">
+                <view class="m-one-sex" @tap="changeRoute">
                    <image src="../../images/icon-man.png"></image>
                     <view>男</view>
                 </view>
@@ -42,7 +42,13 @@
             navigationBarTitleText: '预约体检'
         }
         data = {}
-        methods = {}
+        methods = {
+            changeRoute(){
+                wx.navigateTo({
+                  url: '/pages/physical/addPhysical'
+                });
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">

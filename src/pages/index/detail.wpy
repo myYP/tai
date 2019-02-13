@@ -1,0 +1,18 @@
+<template>
+    <view>
+        体检详情
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+
+    export default class detail extends wepy.page {
+        config = {
+            navigationBarTitleText: '体检详情'
+        }
+        data = {}
+        methods = {}
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+</style>
