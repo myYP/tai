@@ -30,17 +30,17 @@ page{
   export default class extends wepy.app {
     config = {
       pages: [
-          'pages/physical/index',
+          'pages/personal/orderList',
+          'pages/personal/index',
           'pages/index/index',
           'pages/index/detail',
           'pages/index/playOrder',
           'pages/index/physicalList',
           'pages/personal/login',
-          'pages/personal/index',
-          'pages/personal/orderList',
           'pages/personal/orderDetail',
           'pages/personal/coupons',
           'pages/personal/report',
+          'pages/physical/index',
           'pages/physical/addPhysical',
           'pages/physical/questionnaire',
           'pages/knowledge/index',

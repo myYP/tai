@@ -1,6 +1,50 @@
 <template>
-    <view>
-        订单状态
+    <view class="m-orderList">
+        <view class="m-navList">
+            <view class="m-nav active">已寄出</view>
+            <view class="m-nav">已寄出</view>
+            <view class="m-nav">已寄出</view>
+        </view>
+        <view class="m-order-list">
+            <view class="m-one-order">
+                <view class="m-one-order-top">
+                    <image src="../../images/swide.png"></image>
+                    <view class="m-one-order-right">
+                        <view class="m-one-order-h">
+                            <span>体检项目体检项目</span>
+                            <span class="m-red">已寄出</span>
+                        </view>
+                        <view class="m-one-order-p">
+                            <span>定点医院：某某医院</span>
+                            <span class="m-red">￥299</span>
+                        </view>
+                    </view>
+                </view>
+                <view class="m-one-order-bottom">
+                    <view></view>
+                    <view class="m-order-btn">确认收货</view>
+                </view>
+            </view>
+            <view class="m-one-order">
+                <view class="m-one-order-top">
+                    <image src="../../images/swide.png"></image>
+                    <view class="m-one-order-right">
+                        <view class="m-one-order-h">
+                            <span>体检项目体检项目</span>
+                            <span class="m-red">已寄出</span>
+                        </view>
+                        <view class="m-one-order-p">
+                            <span>定点医院：某某医院</span>
+                            <span class="m-red">￥299</span>
+                        </view>
+                    </view>
+                </view>
+                <view class="m-one-order-bottom">
+                    <view></view>
+                    <view class="m-order-btn">确认收货</view>
+                </view>
+            </view>
+        </view>
     </view>
 </template>
 <script>
@@ -11,8 +55,86 @@
             navigationBarTitleText: '订单状态'
         }
         data = {}
-        methods = {}
+        methods = {
+
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
+    .m-orderList{
+        .m-navList{
+            width: 100%;
+            .flex-row(space-around);
+            height: 58rpx;
+            background-color: #FFFEFE;
+            font-size: 24rpx;
+            margin-bottom: 20rpx;
+            .m-nav{
+                height: 58rpx;
+                line-height: 58rpx;
+                border-bottom: none;
+                &.active{
+                    border-bottom: 3rpx solid @common-color;
+                }
+            }
+        }
+        .m-order-list{
+            .m-one-order{
+                width: 700rpx;
+                background-color: #fff;
+                padding: 0 25rpx;
+                margin-bottom: 20rpx;
+                .m-one-order-top{
+                    display: flex;
+                    flex-flow: row;
+                    align-items: flex-start;
+                    justify-content: flex-start;
+                    border-bottom: 1rpx solid rgba(94,94,94,0.5);
+                    padding: 25rpx 0;
+                    image{
+                        width: 153rpx;
+                        height: 153rpx;
+                        margin-right: 25rpx;
+                        border-radius: 10rpx;
+                    }
+                    .m-one-order-right{
+                        height: 153rpx;
+                        .flex-col(space-between);
+                        .m-one-order-h{
+                            font-size: 28rpx;
+                            color: #333;
+                            width: 500rpx;
+                            .flex-row(space-between);
+                        }
+                        .m-one-order-p{
+                            font-size: 24rpx;
+                            color: #999;
+                            width: 500rpx;
+                            .flex-row(space-between);
+                            .m-red{
+                                color: #9A0000;
+                            }
+                        }
+                    }
+
+                }
+                .m-one-order-bottom{
+                    height: 96rpx;
+                    /*width: 100%;*/
+                    padding: 0 34rpx;
+                    .flex-row(space-between);
+                    .m-order-btn{
+                        width: 130rpx;
+                        padding: 5rpx 0;
+                        font-size: 24rpx;
+                        text-align: center;
+                        background-color: @common-color;
+                        color: #fff;
+                        border-radius: 30rpx;
+                    }
+                }
+            }
+        }
+    }
 </style>

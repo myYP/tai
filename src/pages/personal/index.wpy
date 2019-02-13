@@ -106,7 +106,7 @@
                 <view class="m-title-name">
                     <image src="../../images/icon-car.png" class="m-icon-title"></image>
                     <span>订单状态</span></view>
-                <view>
+                <view @tap="changeRoute">
                     <image src="../../images/icon-more.png" class="m-icon-more"></image>
                 </view>
             </view>
@@ -214,7 +214,12 @@
                 wx.switchTab({
                     url: '/pages/work/index'
                 })
-            }
+            },
+            changeRoute(){
+                wx.navigateTo({
+                    url: '/pages/personal/orderList'
+                });
+            },
         }
 
     }

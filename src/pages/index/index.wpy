@@ -194,7 +194,7 @@
     <view class="m-index-content">
         <view class="m-content-title">
           <view class="m-title-name">体检项目</view>
-          <view>
+          <view @tap="changeRoute">
             <span>查看更多</span>
             <image src="../../images/icon-more.png" class="m-icon-more"></image>
           </view>
@@ -342,6 +342,11 @@
     //       }
     //   }
     methods = {
+        changeRoute(){
+            wx.navigateTo({
+                url: '/pages/index/physicalList'
+            });
+        },
       inputTap(){
         // wx.navigateTo({
         //   url: '/pages/index/search'

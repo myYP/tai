@@ -6,21 +6,12 @@
         width: 33.3%;
         border-left: 0.5px solid #E6E6E6;
         font-size: 28rpx;
-        &:first-child{
-            border: none;
-        }
-        .m-icon-arrow-down{
-            width: 24rpx;
-            height: 14rpx;
-            margin-left: 20rpx;
-        }
+
     }
 </style>
 <template>
     <view class="m-one-nav" @tap="navTap({{index}})">
         <view>{{list.name}}</view>
-        <image wx:if="{{!list.up}}" class="m-icon-arrow-down" src="../../images/icon_arrow_down2.png" />
-        <image wx:if="{{list.up}}" class="m-icon-arrow-down" src="../../images/icon_arrow_up.png" />
     </view>
 </template>
 <script>
