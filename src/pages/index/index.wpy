@@ -99,17 +99,17 @@
             border-top-left-radius: 20rpx;
             border-bottom-left-radius: 20rpx;
             margin-right: 14rpx;
-            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
-            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
-            overflow : hidden;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
           }
           .m-one-content-h{
             font-size: 28rpx;
             height: 80rpx;
             margin: 18rpx 0 ;
             font-weight: bold;
+            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+            overflow : hidden;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
           .m-one-content-p{
             font-size: 24rpx;
@@ -200,7 +200,7 @@
           </view>
         </view>
       <view class="m-content-content">
-        <view class="m-one-content">
+        <view class="m-one-content" @tap="detailTap">
           <image src="../../images/swide.png"></image>
           <view>
             <view class="m-one-content-h">
@@ -347,10 +347,10 @@
                 url: '/pages/index/physicalList'
             });
         },
-      inputTap(){
-        // wx.navigateTo({
-        //   url: '/pages/index/search'
-        // });
+      detailTap(){
+        wx.navigateTo({
+          url: '/pages/index/detail'
+        });
       },
         upper(e) {
             console.log(e)

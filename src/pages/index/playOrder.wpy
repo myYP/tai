@@ -1,6 +1,64 @@
 <template>
-    <view>
-        确认订单
+    <view class="m-playOrder">
+        <view class="m-title">
+            <view class="m-raw m-title">
+                <span>体检用户：某某某</span>
+                <span>15700000000</span>
+            </view>
+        </view>
+        <view class="m-order-info">
+            <view class="m-one-content">
+                <image src="../../images/swide.png"></image>
+                <view class="m-content-right">
+                    <view class="m-one-content-h">
+                        血常规基础套餐
+                    </view>
+                    <view class="m-one-content-p">适用人群：所有人群</view>
+                    <view class="m-red">￥899</view>
+                </view>
+            </view>
+
+            <view class="m-order-detail">
+                <view class="m-raw m-flex-between">
+                    <span>预约抽血时间</span>
+                    <picker
+                            mode="time"
+                            value="{{time}}"
+                            start="09:01"
+                            end="21:01"
+                            bindchange="bindTimeChange"
+                    >
+                        <view class="picker m-black">
+                             {{time}}
+                        </view>
+                    </picker>
+                </view>
+                <view class="m-raw m-flex-start">
+                    <span>买家留言：</span>
+                    <textarea  auto-height placeholder="选填" class="m-textarea"/>
+                </view>
+                <view class="m-raw m-flex-between">
+                    <span>优惠选择</span>
+                    <picker
+                            mode="time"
+                            value="{{time}}"
+                            start="09:01"
+                            end="21:01"
+                            bindchange="bindTimeChange"
+                    >
+                        <view class="picker">
+                            {{time}}
+                            <image src="../../images/icon-more.png"></image>
+                        </view>
+                    </picker>
+                </view>
+                <view class="m-raw m-flex-between">
+                    <span>付款方式</span>
+                    <span class="m-black">微信支付</span>
+                </view>
+            </view>
+        </view>
+        <view class="m-detail-btn" >确认支付</view>
     </view>
 </template>
 <script>
@@ -10,9 +68,112 @@
         config = {
             navigationBarTitleText: '确认订单'
         }
-        data = {}
+        data = {
+            time: '12:01',
+        }
         methods = {}
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
+    .m-playOrder{
+        background-color: #fff;
+        padding-top: 40rpx;
+        .m-title{
+            padding: 0 30rpx 0 44rpx;
+            margin-bottom: 40rpx;
+            font-size: 28rpx;
+            .m-raw{
+                padding-left: 16rpx;
+                border-left: 10rpx solid transparent;
+                line-height: 35rpx;
+                .flex-row(space-between);
+                &.m-title{
+                    color: #666666;
+                    border-left: 10rpx solid @common-color;
+                    margin-bottom: 14rpx;
+                }
+            }
+        }
+        .m-one-content{
+            width: 662rpx;
+            height: 250rpx;
+            padding: 22rpx 48rpx;
+            display: flex;
+            flex-flow: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 20rpx;
+            border-top: 1rpx solid #CCCCCC ;
+            border-bottom: 1rpx solid #CCCCCC ;
+            image{
+                width: 160rpx;
+                height: 160rpx;
+                margin-right: 14rpx;
+                border-radius: 10rpx;
+            }
+            .m-content-right{
+                height: 160rpx;
+                display: flex;
+                flex-flow: column;
+                align-items: flex-start;
+                justify-content: space-around;
+            }
+            .m-one-content-h{
+                font-size: 28rpx;
+                height: 80rpx;
+                font-weight: bold;
+                display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+                text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+                overflow : hidden;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            .m-one-content-p{
+                font-size: 24rpx;
+                color: #B1B1B1;
+            }
+        }
+        .m-order-detail{
+            padding: 0 44rpx;
+            .m-raw{
+                padding: 27rpx 0;
+                font-size: 24rpx;
+                border-bottom: 1rpx solid #CCCCCC;
+                color: #989898;
+                &:last-child{
+                    border-bottom: none;
+                }
+                &.m-flex-between{
+                    .flex-row(space-between);
+                }
+                &.m-flex-start{
+                    .flex-row(flex-start);
+                }
+                .m-textarea{
+                    width: 490rpx;
+                    font-size: 24rpx;
+                    margin-left: 20rpx;
+                }
+                image{
+                    width: 24rpx;
+                    height: 24rpx;
+                }
+                .m-black{
+                    color: #333333;
+                }
+            }
+        }
+        .m-detail-btn{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100rpx;
+            line-height: 100rpx;
+            text-align: center;
+            background-color: @common-color;
+            color: #fff;
+        }
+    }
 </style>

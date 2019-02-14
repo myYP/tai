@@ -1,6 +1,98 @@
 <template>
-    <view>
-        体检详情
+    <view class="m-detail">
+        <swiper
+                indicator-dots="{{indicatorDots}}"
+                autoplay="{{autoplay}}"
+                interval="{{interval}}"
+                duration="{{duration}}"
+                style="height: 750rpx;"
+        >
+            <block wx:for="{{imgUrls}}" wx:key="item">
+                <swiper-item>
+                    <image src="{{item}}" class="slide-image" style="width: 750rpx;height: 750rpx;" />
+                </swiper-item>
+            </block>
+        </swiper>
+        <view class="m-detail-content">
+            <view class="m-content-title">
+                <span>体检项目体检项目</span>
+                <span class="m-red">￥1668.0</span>
+            </view>
+            <view>
+                <view class="m-content-one">
+                    <span>233人购买</span>
+                    <image src="../../images/icon-share.png" class="m-icon-share"></image>
+                </view>
+                <view class="m-content-one">
+                    <span>体检方式</span>
+                    <image src="../../images/icon-more.png"></image>
+                </view>
+                <view class="m-content-one">
+                    <span>体检用户</span>
+                    <image src="../../images/icon-more.png"></image>
+                </view>
+            </view>
+        </view>
+
+        <image src="../../images/swide.png" class="m-detail-img"></image>
+
+        <view class="m-modal" >
+            <view class="m-modal-state">
+                <view class="m-detail-info">
+                    <image src="../../images/swide.png" class="m-modal-detail-img"></image>
+                    <view class="m-modal-detail-info">
+                        <view class="m-detail-h">体检项目体检项目体检项目体检项目
+                            体检项目体检项目体检项目体检项目</view>
+                        <view class="m-red">￥1688.0</view>
+                    </view>
+                </view>
+                <scroll-view
+                        scroll-y
+                        style="height: 500rpx;"
+                        scroll-top="{{scrollTop}}"
+                >
+                     <view class="m-sku-h">体检方式</view>
+                    <view>
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                            <!--<view class="picker">-->
+                            <!--当前选择：{{array[index]}}-->
+                            <!--</view>-->
+                            <view class="m-sku">
+                                <span>定点医院选择</span>
+                                <image src="../../images/icon-select.png" class="m-icon-select"></image>
+                            </view>
+                        </picker>
+
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                            <!--<view class="picker">-->
+                            <!--当前选择：{{array[index]}}-->
+                            <!--</view>-->
+                            <view class="m-sku">
+                                <span>直营门店</span>
+                                <image src="../../images/icon-select.png" class="m-icon-select"></image>
+                            </view>
+                        </picker>
+
+                    </view>
+                    <view class="m-sku-h">体检用户</view>
+                    <view>
+                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                            <!--<view class="picker">-->
+                                <!--当前选择：{{array[index]}}-->
+                            <!--</view>-->
+                            <view class="m-sku">
+                                <span>体检用户选择</span>
+                                <image src="../../images/icon-select.png" class="m-icon-select"></image>
+                            </view>
+                        </picker>
+
+
+                    </view>
+                </scroll-view>
+            </view>
+        </view>
+
+        <view class="m-detail-btn" @tap="toBuy">立即购买</view>
     </view>
 </template>
 <script>
@@ -10,9 +102,144 @@
         config = {
             navigationBarTitleText: '体检详情'
         }
-        data = {}
-        methods = {}
+        data = {
+            imgUrls: [
+                '../../images/swide.png',
+                '../../images/swide.png',
+                '../../images/swide.png'
+            ],
+            indicatorDots: true,
+            autoplay: false,
+            interval: 3000,
+            duration: 1000,
+            scrollTop:100,
+            array: ['美国', '中国', '巴西', '日本'],
+            index:0
+        }
+        methods = {
+            toBuy(){
+                wx.navigateTo({
+                    url: '/pages/index/playOrder'
+                });
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
+    .m-detail{
+        padding-bottom: 120rpx;
+        .m-detail-content{
+            margin: 20rpx 0;
+            background-color: #fff;
+            .m-content-title{
+                font-size: 30rpx;
+                color: #666;
+                .flex-row(space-between);
+                padding: 23rpx 30rpx ;
+                .m-red{
+                    color: #9A0000;
+                }
+            }
+            .m-content-one{
+                padding: 23rpx 30rpx;
+                font-size: 24rpx;
+                color: #B1B1B1;
+                .flex-row(space-between);
+                border-bottom: 1rpx solid #D5D5D5;
+                &:last-child{
+                    border-bottom: none;
+                }
+                image{
+                    width: 24rpx;
+                    height: 24rpx;
+                }
+                .m-icon-share{
+                    width: 32rpx;
+                    height: 32rpx;
+                }
+            }
+        }
+        .m-detail-img{
+            width: 100%;
+            min-height: 750rpx;
+        }
+        .m-detail-btn{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100rpx;
+            line-height: 100rpx;
+            text-align: center;
+            background-color: @common-color;
+            color: #fff;
+        }
+        .m-modal{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right:0;
+            bottom:0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0,0,0,0.2);
+            .flex-col(flex-end);
+            .m-modal-state{
+                background-color: #fff;
+                padding: 40rpx;
+                width: 670rpx;
+                height: 750rpx;
+                border-radius:50rpx 50rpx 0 0;
+                margin-bottom: 100rpx;
+                .m-detail-info{
+                    .flex-row(flex-start);
+                    margin-bottom: 40rpx;
+                    .m-modal-detail-img{
+                        width: 150rpx;
+                        height: 150rpx;
+                        border-radius: 10rpx;
+                        margin-right: 20rpx;
+                    }
+                    .m-modal-detail-info{
+                        height: 150rpx;
+                        display: flex;
+                        flex-flow: column;
+                        align-items: flex-start;
+                        justify-content: space-between;
+                        text-align: left;
+                        .m-detail-h{
+                            width: 480rpx;
+                            font-size: 30rpx;
+                            white-space:normal;
+                            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+                            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+                            overflow : hidden;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                        }
+                    }
+                }
+                .m-sku-h{
+                    font-size: 28rpx;
+                    color: #B1B1B1;
+                    margin-bottom: 25rpx;
+                }
+                .m-sku{
+                    padding: 0 40rpx ;
+                    width: 560rpx;
+                    height: 50rpx;
+                    border-radius: 30rpx;
+                    .flex-row(space-between);
+                    background-color: #FAFAFA;
+                    margin-bottom: 25rpx;
+                    font-size: 28rpx;
+                    .m-icon-select{
+                        width: 34rpx;
+                        height: 34rpx;
+                    }
+                }
+            }
+        }
+    }
 </style>
