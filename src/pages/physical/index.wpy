@@ -4,17 +4,10 @@
             <view class="m-title-name">我要体检</view>
         </view>
         <view class="m-physical-list">
-            <view class="m-one-physical">
-                <image src="../../images/icon-man.png"></image>
-                <span>某一</span>
-            </view>
-            <view class="m-one-physical">
-                <image src="../../images/icon-man.png"></image>
-                <span>某一</span>
-            </view>
-            <view class="m-one-physical">
-                <image src="../../images/icon-woman.png"></image>
-                <span>某一</span>
+            <view class="m-one-physical" wx:for="{{user_list}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+                <image src="../../images/icon-woman.png" wx:if="{{item.examiner_sex == '女'}}"></image>
+                <image src="../../images/icon-man.png" wx:else></image>
+                <span>{{item.examiner_name}}</span>
             </view>
         </view>
         <view class="m-add-physical">
@@ -22,11 +15,11 @@
                 <view class="m-title-name">添加体检者</view>
             </view>
             <view class="m-physical-sex">
-                <view class="m-one-sex" @tap="changeRoute">
+                <view class="m-one-sex" @tap="changeRoute('男')">
                    <image src="../../images/icon-man.png"></image>
                     <view>男</view>
                 </view>
-                <view class="m-one-sex m-woman">
+                <view class="m-one-sex m-woman" @tap="changeRoute('女')">
                     <image src="../../images/icon-woman.png"></image>
                     <view>女</view>
                 </view>
@@ -36,16 +29,44 @@
 </template>
 <script>
     import wepy from 'wepy';
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
 
     export default class Login extends wepy.page {
         config = {
             navigationBarTitleText: '预约体检'
         }
-        data = {}
+        data = {
+            user_list:[]
+        }
+        getUserList() {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_my_medical_user, //仅为示例，并非真实的接口地址
+                data: {
+                   token:'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.user_list = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+            this.getUserList();
+        }
         methods = {
-            changeRoute(){
+            changeRoute(sex){
                 wx.navigateTo({
-                  url: '/pages/physical/addPhysical'
+                  url: '/pages/physical/addPhysical?examiner_sex=' + sex
                 });
             }
         }

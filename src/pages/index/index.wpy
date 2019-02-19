@@ -313,12 +313,12 @@
               }
           })
       }
-    onLoad(options){
-       var _this = this;
+      onLoad(options){
+         var _this = this;
 
-      this.getMedicalList();
-      this.getScienceList();
-    }
+        this.getMedicalList();
+        this.getScienceList();
+      }
       // onPullDownRefresh(){
       //     wx.stopPullDownRefresh();
       // }
