@@ -1,6 +1,6 @@
 import tip from './tip'
 import Promise from 'promise';
- const _http = (options,url,method) => {
+ const wxRequest = (options,url,method) => {
      tip.loading();
      return new Promise( (resolve, reject) => {
          let params = {
@@ -19,4 +19,7 @@ import Promise from 'promise';
          if(options) params = Object.assign(params,options);
          wx.request(params);
      })
+}
+module.exports = {
+    wxRequest
 }

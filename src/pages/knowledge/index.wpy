@@ -3,7 +3,6 @@
     .m-index{
         width: 100%;
         background-color: #fff;
-        height: 100%;
         .m-index-content{
             padding: 0 20rpx ;
             width: 710rpx;
@@ -120,49 +119,27 @@
                     upper-threshold="0"
                     lower-threshold="0"
             >
-                <view class="m-scroll-one">
-                    <image src="../../images/swide.png"></image>
-                    <view class="m-scroll-name">癌症可以避免吗？
-                        精准来指导，癌症不找您！癌症可以避免吗？
-                        精准来指导，癌症不找您！</view>
-                </view>
-                <view class="m-scroll-one">
-                    <image src="../../images/swide.png"></image>
-                    <view class="m-scroll-name">癌症可以避免吗？
-                        精准来指导，癌症不找您！</view>
-                </view>
-                <view class="m-scroll-one">
-                    <image src="../../images/swide.png"></image>
-                    <view class="m-scroll-name">癌症可以避免吗？
-                        精准来指导，癌症不找您！</view>
+                <view class="m-scroll-one" @tap="goDetail({{item}})" wx:for="{{top_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+                    <image src="{{item.science_pic}}"></image>
+                    <view class="m-scroll-name">{{item.science_name}}</view>
                 </view>
             </scroll-view>
             <view class="m-content-title">
                 <view class="m-title-name">科学知识</view>
-                <view>
-                    <span>查看更多</span>
-                    <image src="../../images/icon-more.png" class="m-icon-more"></image>
-                </view>
+                <!--<view>-->
+                    <!--<span>查看更多</span>-->
+                    <!--<image src="../../images/icon-more.png" class="m-icon-more"></image>-->
+                <!--</view>-->
             </view>
             <view class="m-content-content">
-                <view class="m-one-content">
-                    <image src="../../images/swide.png"></image>
+                <view class="m-one-content" @tap="goDetail({{item}})" wx:for="{{science_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+                    <image src="{{item.science_pic}}"></image>
                     <view>
                         <view class="m-one-content-h">
-                            血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐
+                            {{item.science_name}}
                         </view>
-                        <view class="m-one-content-p">适用人群：所有人群</view>
-                        <view class="m-one-content-grey">2018-1-7 15:51</view>
-                    </view>
-                </view>
-                <view class="m-one-content">
-                    <image src="../../images/swide.png"></image>
-                    <view>
-                        <view class="m-one-content-h">
-                            血常规基础套餐
-                        </view>
-                        <view class="m-one-content-p">适用人群：所有人群适用人群：所有人群适用人群：所有人群适用人群：所有人群适用人群：所有人群适用人群：所有人群</view>
-                        <view class="m-one-content-grey">2018-1-7 15:51</view>
+                        <view class="m-one-content-p"></view>
+                        <view class="m-one-content-grey">{{item.updatetime}}</view>
                     </view>
                 </view>
             </view>
@@ -177,8 +154,6 @@
     import wepy from 'wepy';
     import api from '../../api/api';
     import tip from '../../utils/tip';
-    import onfire from 'onfire.js';
-
 
     export default class IndexIndex extends wepy.page {
         config = {
@@ -188,6 +163,8 @@
 
         }
         data = {
+            science_data:[],
+            top_data:[],
             imgUrls: [
                 '../../images/swide.png',
                 '../../images/swide.png',
@@ -202,66 +179,47 @@
             scrollTop: 100,
             page_info:{cur_page:0, page_size: 5, total_items: 2, total_pages: 1},
         }
-        // async getWorkList(sess_key,areano) {
-        //   let that = this;
-        //      tip.loading();
-        //     let res = await api.login({method:'POST',query:{
-        //             sess_key: sess_key,
-        //             is_rec:1,
-        //             areano:areano || "",
-        //             page:Number(that.page_info.cur_page) +1 || 1,
-        //             page_size:that.page_info.page_size
-        //         }});
-        //     if(res.data.error_code == 0 ){
-        //
-        //         that.$apply();
-        //         tip.loaded();
-        //     }else{
-        //         tip.error(res.data.error_msg);
-        //     }
-        // }
-
-        // onLoad(options){
-        //    var _this = this;
-        //    if(options.scene){
-        //        var sence = decodeURIComponent(options.scene);
-        //    }
-        //     onfire.on('search', function (args) {
-        //         _this.select_city =  args.inputVal ;
-        //         wx.getStorage({
-        //             key: 'sess_key',
-        //             success: function(res){
-        //                 // _this.getWorkList(res.data,_this.select_city.areano);
-        //             }
-        //         });
-        //     });
-        //
-        // }
-        //   onPullDownRefresh(){
-        //       wx.stopPullDownRefresh();
-        //   }
-        //   onReachBottom(){
-        //       var _this = this;
-        //       if(_this.page_info.cur_page == _this.page_info.total_pages){
-        //           wx.showToast({ //如果全部加载完成了也弹一个框
-        //               title: '我也是有底线的',
-        //               icon: 'success',
-        //               duration: 300
-        //           });
-        //       }else{
-        //           wx.getStorage({
-        //               key: 'sess_key',
-        //               success: function(res){
-        //                   // _this.getWorkList(res.data,_this.select_city.areano);
-        //               }
-        //           });
-        //       }
-        //   }
+        getScienceList(type) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_science_list, //仅为示例，并非真实的接口地址
+                data: {
+                    use_type: type,
+                    page_num: 1,
+                    page_size:that.page_info.page_size
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    if(type == 0){
+                        that.science_data = res.data.data;
+                    }else{
+                        that.top_data = res.data.data;
+                    }
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+          this.getScienceList(0);
+            this.getScienceList(1);
+        }
         methods = {
             inputTap(){
                 // wx.navigateTo({
                 //   url: '/pages/index/search'
                 // });
+            },
+            goDetail(item){
+                wx.navigateTo({
+                  url: '/pages/knowledge/article?science_id='+item.science_id
+                });
             },
             upper(e) {
                 console.log(e)

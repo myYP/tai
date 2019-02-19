@@ -11,6 +11,7 @@
     import wepy from 'wepy';
 
     import WxParse from '../../wxParse/wxParse.js';
+    import regeneratorRuntime from '../../utils/runtime'
     export default class HTMLParser extends wepy.component {
         props = {
             parserName: {

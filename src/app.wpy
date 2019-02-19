@@ -26,14 +26,14 @@ page{
   import tip from './utils/tip';
 
   import { setStore } from 'wepy-redux'
-
   export default class extends wepy.app {
     config = {
       pages: [
-          'pages/physical/questionnaire',
+
+          'pages/index/index',
           'pages/personal/index',
           'pages/index/detail',
-          'pages/index/index',
+
           'pages/index/playOrder',
           'pages/index/physicalList',
           'pages/personal/login',
@@ -43,7 +43,7 @@ page{
           'pages/personal/report',
           'pages/physical/index',
           'pages/physical/addPhysical',
-
+          'pages/physical/questionnaire',
           'pages/knowledge/index',
           'pages/knowledge/article',
 

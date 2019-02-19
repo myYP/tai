@@ -36,7 +36,7 @@
 
         <image src="../../images/swide.png" class="m-detail-img"></image>
 
-        <view class="m-modal" >
+        <view class="m-modal" wx:if="{{show_modal}}">
             <view class="m-modal-state">
                 <view class="m-detail-info">
                     <image src="../../images/swide.png" class="m-modal-detail-img"></image>
@@ -103,6 +103,7 @@
             navigationBarTitleText: '体检详情'
         }
         data = {
+            show_modal:false,
             imgUrls: [
                 '../../images/swide.png',
                 '../../images/swide.png',

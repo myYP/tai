@@ -7,34 +7,16 @@
             </view>
         </view>
         <view class="m-content">
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view>
-                    <view class="m-one-content-h">
-                        血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐
+            <view >
+                <view class="m-one-content" @tap="goDetail" wx:for="{{medical_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+                    <image src="{{item.medical_pic}}"></image>
+                    <view>
+                        <view class="m-one-content-h">
+                            {{item.medical_name}}
+                        </view>
+                        <view class="m-one-content-p">适用人群：{{item.medical_for}}</view>
+                        <view class="m-price">¥{{item.medical_price}}</view>
                     </view>
-                    <view class="m-one-content-p">适用人群：所有人群</view>
-                    <view class="m-price">¥1899.99</view>
-                </view>
-            </view>
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view>
-                    <view class="m-one-content-h">
-                        血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐
-                    </view>
-                    <view class="m-one-content-p">适用人群：所有人群</view>
-                    <view class="m-price">¥1899.99</view>
-                </view>
-            </view>
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view>
-                    <view class="m-one-content-h">
-                        血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐血常规基础套餐
-                    </view>
-                    <view class="m-one-content-p">适用人群：所有人群</view>
-                    <view class="m-price">¥1899.99</view>
                 </view>
             </view>
         </view>
@@ -42,13 +24,58 @@
 </template>
 <script>
     import wepy from 'wepy';
-
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
+    import regeneratorRuntime from '../../utils/runtime'
     export default class physicalList extends wepy.page {
         config = {
             navigationBarTitleText: '体检项目'
         }
-        data = {}
-        methods = {}
+        data = {
+            page_info:{
+                cur_page:0,
+                page_size:10
+            },
+            medical_data:[]
+        }
+        components = {
+
+        }
+        getMedicalList() {
+          let that = this;
+             tip.loading();
+                wx.request({
+                    url: api.get_medical_list, //仅为示例，并非真实的接口地址
+                    data: {
+                        use_type: 0,
+                        page_num:Number(that.page_info.cur_page) +1 || 1,
+                        page_size:that.page_info.page_size,
+                        medical_name:''
+                    },
+                    header: {
+                        'content-type': 'application/json' // 默认值
+                    },
+                    success: function(res) {
+                        that.medical_data = res.data.data;
+                        that.$apply();
+                        tip.loaded();
+                    },
+                    error:function (error) {
+                        tip.loaded();
+                    }
+                })
+        }
+        onLoad(options){
+           this.getMedicalList();
+
+        }
+        methods = {
+            goDetail(){
+                wx.navigateTo({
+                    url: '/pages/index/detail'
+                });
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
