@@ -165,9 +165,9 @@
             interval="{{interval}}"
             duration="{{duration}}"
     >
-      <block wx:for="{{imgUrls}}" wx:key="item">
+      <block wx:for="{{scroll_data}}" wx:key="item">
         <swiper-item>
-          <image src="{{item}}" class="slide-image" style="width: 750rpx;height: 300rpx;" />
+          <image src="{{item.loadpic_pic}}" class="slide-image" style="width: 750rpx;height: 300rpx;" />
         </swiper-item>
       </block>
     </swiper>
@@ -178,15 +178,15 @@
     </view>
 
     <view class="m-nav-box">
-      <view class="m-nav-one">
+      <view class="m-nav-one" @tap="goPhysical">
         <image src="../../images/appointment.png"></image>
         <view>检测预约</view>
       </view>
-      <view class="m-nav-one">
+      <view class="m-nav-one" @tap="goKnowledge">
         <image src="../../images/knowledge.png"></image>
         <view>科学知识</view>
       </view>
-      <view class="m-nav-one">
+      <view class="m-nav-one" @tap="goQuestionnaire">
         <image src="../../images/feedback.png"></image>
         <view>用户反馈</view>
       </view>
@@ -200,7 +200,7 @@
           </view>
         </view>
       <view class="m-content-content">
-        <view class="m-one-content" @tap="detailTap(item)" wx:for="{{medical_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+        <view class="m-one-content" @tap="detailTap({{item}})" wx:for="{{medical_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
           <image src="{{item.medical_pic}}"></image>
           <view>
             <view class="m-one-content-h">
@@ -252,7 +252,7 @@
     data = {
         medical_data:[],
         science_data:[],
-        imgUrls: [
+        scroll_data: [
             '../../images/swide.png',
             '../../images/swide.png',
             '../../images/swide.png'
@@ -261,16 +261,36 @@
         autoplay: false,
         interval: 3000,
         duration: 1000,
-      work_list:[],
+       work_list:[],
         toView: 'red',
         scrollTop: 100,
         page_info:{cur_page:0, page_size: 3, total_items: 2, total_pages: 1},
     }
+      getScroll() {
+          let that = this;
+          tip.loading();
+          wx.request({
+              url: api.get_loadpic_list,
+              data: {
+              },
+              header: {
+                  'content-type': 'application/json' // 默认值
+              },
+              success: function(res) {
+                  that.scroll_data = res.data.data;
+                  that.$apply();
+                  tip.loaded();
+              },
+              error:function (error) {
+                  tip.loaded();
+              }
+          })
+      }
       getMedicalList() {
           let that = this;
           tip.loading();
           wx.request({
-              url: api.get_medical_list, //仅为示例，并非真实的接口地址
+              url: api.get_medical_list,
               data: {
                   use_type: 0,
                   page_num: 1,
@@ -314,10 +334,9 @@
           })
       }
       onLoad(options){
-         var _this = this;
-
         this.getMedicalList();
         this.getScienceList();
+        this.getScroll();
       }
       // onPullDownRefresh(){
       //     wx.stopPullDownRefresh();
@@ -350,14 +369,24 @@
                 url: '/pages/knowledge/index'
             });
         },
-        detailTap(){
+        detailTap(item){
           wx.navigateTo({
-            url: '/pages/index/detail'
+            url: '/pages/index/detail?medical_id=' +item.medical_id
           });
         },
         goDetail(item){
             wx.navigateTo({
                 url: '/pages/knowledge/article?science_id='+item.science_id
+            });
+        },
+        goPhysical(){
+            wx.switchTab({
+                url: '/pages/physical/index'
+            });
+        },
+        goQuestionnaire(){
+            wx.navigateTo({
+                url: '/pages/physical/questionnaire'
             });
         },
         upper(e) {

@@ -15,12 +15,12 @@
         </swiper>
         <view class="m-detail-content">
             <view class="m-content-title">
-                <span>体检项目体检项目</span>
-                <span class="m-red">￥1668.0</span>
+                <span>{{detail_data.medical_name}}</span>
+                <span class="m-red">￥{{detail_data.medical_price}}</span>
             </view>
             <view>
                 <view class="m-content-one">
-                    <span>233人购买</span>
+                    <span>{{detail_data.medical_volume}}人购买</span>
                     <image src="../../images/icon-share.png" class="m-icon-share"></image>
                 </view>
                 <view class="m-content-one">
@@ -85,8 +85,6 @@
                                 <image src="../../images/icon-select.png" class="m-icon-select"></image>
                             </view>
                         </picker>
-
-
                     </view>
                 </scroll-view>
             </view>
@@ -97,12 +95,14 @@
 </template>
 <script>
     import wepy from 'wepy';
-
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
     export default class detail extends wepy.page {
         config = {
             navigationBarTitleText: '体检详情'
         }
         data = {
+            detail_data:null,
             show_modal:false,
             imgUrls: [
                 '../../images/swide.png',
@@ -116,6 +116,30 @@
             scrollTop:100,
             array: ['美国', '中国', '巴西', '日本'],
             index:0
+        }
+        getDetail(id) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_medical_message, //仅为示例，并非真实的接口地址
+                data: {
+                    medical_id:id
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.detail_data = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+            this.getDetail(options.medical_id);
         }
         methods = {
             toBuy(){
