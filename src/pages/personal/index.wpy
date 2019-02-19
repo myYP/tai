@@ -95,8 +95,8 @@
     <view class="m-personal">
         <view class="m-avatar-content">
             <view class="content">
-                <image class="avatar" src="http://120.76.230.93:8063/Upload/2017/1123/20171123115952981_img.png" />
-                <view class="name">username</view>
+                <image class="avatar" src="{{user_info.user_icon}}" />
+                <view class="name">{{user_info.user_name}}</view>
                 <image src="../../images/icon-set.png" class="m-icon-set"></image>
             </view>
         </view>
@@ -178,32 +178,38 @@
                     num:0
                 }
             ],
-            userData: {}
+            user_info: {}
         }
-        // // 获取个人资料
-        // async getuserInfo(sess_key) {
-        //     let that = this;
-        //     tip.loading();
-        //         let res = await api.userInfo({method:'POST', query:{
-        //                 sess_key:sess_key
-        //             }})
-        //         if(res.data.error_code == '0'){
-        //             that.userData = res.data.bizobj.data;
-        //             that.$apply()
-        //             tip.loaded()
-        //         }else{
-        //             tip.error(res.data.message)
-        //         }
-        // }
-        // onLoad(){
-        //     var _this = this;
-        //     wx.getStorage({
-        //         key: 'sess_key',
-        //         success: function(res){
-        //             _this.getuserInfo(res.data);
-        //         }
-        //     });
-        // }
+        getuserInfo(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_user_info, //仅为示例，并非真实的接口地址
+                data: {
+                    token: token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.user_info = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(){
+            var _this = this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    _this.getuserInfo(res.data);
+                }
+            });
+        }
         methods = {
             goCoupon(){
                 wx.navigateTo({
