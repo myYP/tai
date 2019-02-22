@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #889aa4;
+      }
+    </style>
+  </defs>
+  <g id="组_4744" data-name="组 4744" transform="translate(15665 5028)">
+    <rect id="矩形_5051" data-name="矩形 5051" class="cls-1" width="25" height="25" transform="translate(-15665 -5028)"/>
+    <path id="flag_fill" class="cls-2" d="M242.2,172.366l-3.586-4.946,3.586-4.948A1.5,1.5,0,0,0,240.939,160H226.067A2.064,2.064,0,0,0,224,162.057V182.71a1.032,1.032,0,1,0,2.065,0v-7.87h14.875a1.492,1.492,0,0,0,1.266-2.473" transform="translate(-15885.396 -5187.742)"/>
+  </g>
+</svg>

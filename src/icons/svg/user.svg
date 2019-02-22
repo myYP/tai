@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #889aa4;
+      }
+    </style>
+  </defs>
+  <g id="组_4553" data-name="组 4553" transform="translate(0.58)">
+    <ellipse id="椭圆_3" data-name="椭圆 3" class="cls-1" cx="5.717" cy="6.046" rx="5.717" ry="6.046" transform="translate(3.559)"/>
+    <path id="路径_17" data-name="路径 17" class="cls-1" d="M51,170.329H31a10.005,10.005,0,1,1,20,0Z" transform="translate(-31.58 -150.329)"/>
+  </g>
+</svg>

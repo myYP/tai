@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        stroke: #bacb97;
+        stroke-width: 2px;
+      }
+
+      .cls-2 {
+        stroke: none;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <g id="椭圆_152" data-name="椭圆 152" class="cls-1">
+    <circle class="cls-2" cx="12.5" cy="12.5" r="12.5"/>
+    <circle class="cls-3" cx="12.5" cy="12.5" r="11.5"/>
+  </g>
+</svg>
