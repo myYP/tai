@@ -160,10 +160,6 @@
               this.$message.error(res.data.message);
             }
           })
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
         }).catch(() => {
 
         });
