@@ -136,10 +136,6 @@
         this.page_num = num;
         this.getUser();
       },
-      //点击修改
-      changeClick(id){
-        this.$router.push({path:'/activity/addDeduction',query:{medical_id:id}});
-      },
       //中止
       offline(){
         let arr = [];

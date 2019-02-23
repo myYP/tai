@@ -39,6 +39,11 @@ const api = {
   offline_card: title + 'card/offline_card',//中止活动
   delete_card: title + 'card/delete_card',//删除活动
   make_cardno: title + 'card/make_cardno',//生成优惠码
+  get_send_list: title +'card/get_send_list',//获取买赠活动列表
+  get_send_message: title + 'card/get_send_message',//获取买赠活动详情
+  new_send: title +'card/new_send',//新增买赠
+  offline_send: title +'card/offline_send',//中止买赠
+  delete_send: title +'card/delete_send',//删除买赠
   get_science_list: title +'science/get_science_list',//获取知识列表
   get_science_message: title +'science/get_science_message',//获取知识详情
   new_science: title +'science/new_science',//新增知识

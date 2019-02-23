@@ -28,17 +28,17 @@
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column align="center" prop="card_status" label="状态">
+        <el-table-column align="center" prop="send_status" label="状态">
           <template slot-scope="scope">
-            <span  :class="scope.row.card_status == '活动中'?'m-sale':'m-done'">{{scope.row.card_status}}</span>
+            <span  :class="scope.row.send_status == '活动中'?'m-sale':'m-done'">{{scope.row.send_status}}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="card_name" label="标题"></el-table-column>
-        <el-table-column align="center"   label="赠数量" ></el-table-column>
-        <el-table-column align="center" prop="medical_price"  label="满数量" ></el-table-column>
+        <el-table-column align="center" prop="send_title" label="标题"></el-table-column>
+        <el-table-column align="center" prop="send_use"  label="赠数量" ></el-table-column>
+        <el-table-column align="center" prop="send_num"  label="满数量" ></el-table-column>
         <el-table-column align="center" prop="medical_for" label="有效期">
           <template slot-scope="scope">
-            {{scope.row.card_start_time}}-{{scope.row.card_end_time}}
+            {{scope.row.send_starttime}}-{{scope.row.send_endtime}}
           </template>
         </el-table-column>
         <el-table-column align="center" prop="medical_list" label="关联产品"></el-table-column>
@@ -46,14 +46,14 @@
         <el-table-column align="center" label="操作" >
           <template slot-scope="scope">
             <div class="m-flex-center">
-              <div class="m-icon-div"  @click="changeClick(scope.row.medical_id)">
-                <svg-icon icon-class="icon-editor"></svg-icon>
-                <p>修改</p>
-              </div>
-              <div class="m-icon-div" @click="deleteProduct(scope.row.medical_id,'line')">
-                <svg-icon icon-class="icon-delete"></svg-icon>
-                <p>删除</p>
-              </div>
+              <!--<div class="m-icon-div"  @click="lookProduct(scope.row.send_id)">-->
+                <!--<svg-icon icon-class="icon-editor"></svg-icon>-->
+                <p @click="lookProduct(scope.row.send_id)">查看</p>
+              <!--</div>-->
+              <!--<div class="m-icon-div" @click="deleteProduct(scope.row.send_id,'line')">-->
+                <!--<svg-icon icon-class="icon-delete"></svg-icon>-->
+                <!--<p>删除</p>-->
+              <!--</div>-->
             </div>
           </template>
         </el-table-column>
@@ -103,7 +103,7 @@
       //  获取产品
       getProdcut(){
         this.loading = true;
-        axios.get(api.get_card_list,{
+        axios.get(api.get_send_list,{
           params: {
             page_num:this.page_num,
             page_size:10
@@ -121,63 +121,31 @@
       //分页
       pageChange(num){
         this.page_num = num;
-        this.getUser();
+        this.getProdcut();
       },
-      //点击修改
-      changeClick(id){
-        this.$router.push({path:'/product/addProduct',query:{medical_id:id}});
+      //查看
+      lookProduct(item,name) {
+        this.$router.push({path: '/activity/addPresent',query:{send_id:item}})
       },
-      //上架
+      //中止
       online(){
         let arr = [];
         for(let i =0;i<this.multipleSelection.length;i++){
-          arr.push(this.multipleSelection[i].medical_id)
+          arr.push(this.multipleSelection[i].send_id)
         }
-        this.$confirm('确定要上架当前选择的商品吗?', '提示', {
+        this.$confirm('确定要中止当前活动吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          axios.post(api.online_medical,{
-            medical_list:arr
+          axios.post(api.offline_send,{
+            send_list:arr
           }).then(res => {
             if(res.data.status == 200){
               this.getProdcut();
               this.$message({
                 type: 'success',
-                message: '上架成功!'
-              });
-            }else{
-              this.$message({
-                type: 'error',
                 message: res.data.message
-              });
-            }
-          })
-        }).catch(() => {
-
-        });
-
-      },
-      //下架
-      offline(){
-        let arr = [];
-        for(let i =0;i<this.multipleSelection.length;i++){
-          arr.push(this.multipleSelection[i].medical_id)
-        }
-        this.$confirm('确定要下架当前选择的商品吗?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          axios.post(api.offline_medical,{
-            medical_list:arr
-          }).then(res => {
-            if(res.data.status == 200){
-              this.getProdcut();
-              this.$message({
-                type: 'success',
-                message: '下架成功!'
               });
             }else{
               this.$message({
@@ -192,22 +160,21 @@
 
       },
       deleteProduct(item,name){
-
         let arr = [];
         if(name){
           arr.push(item)
         }else{
           for(let i =0;i<this.multipleSelection.length;i++){
-            arr.push(this.multipleSelection[i].medical_id)
+            arr.push(this.multipleSelection[i].send_id)
           }
         }
-        this.$confirm('此操作将永久删除该管理员, 是否继续?', '提示', {
+        this.$confirm('确定要删除当前活动吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          axios.post(api.delete_medical,{
-            medical_list:arr
+          axios.post(api.delete_send,{
+            send_list:arr
           }).then(res => {
             if(res.data.status == 200){
               this.getProdcut();
@@ -228,7 +195,7 @@
       },
       //  去往新增
       changeRoute(){
-        this.$router.push('/product/addProduct')
+        this.$router.push('/activity/addPresent')
       }
     }
   }

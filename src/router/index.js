@@ -149,13 +149,19 @@ export const constantRouterMap = [
         path: 'addDeduction',
         name: 'addDeduction',
         component: () => import('src/views/activity/addDeduction'),
-        meta: { title: '抵扣券', icon: ''}
+        meta: { title: '新增抵扣券', icon: ''}
       },
       {
         path: 'present',
         name: 'present',
         component: () => import('src/views/activity/present'),
         meta: { title: '买赠', icon: ''}
+      },
+      {
+        path: 'addPresent',
+        name: 'addPresent',
+        component: () => import('src/views/activity/addPresent'),
+        meta: { title: '新增买赠', icon: ''}
       }
     ]
   },
@@ -175,7 +181,7 @@ export const constantRouterMap = [
         path: 'addMaterial',
         name: 'addMaterial',
         component: () => import('src/views/material/addMaterial'),
-        meta: { title: '素材管理', icon: ''}
+        meta: { title: '新增素材', icon: ''}
       }
     ]
   },
