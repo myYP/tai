@@ -53,7 +53,9 @@ const api = {
   new_custom: title +'config/new_custom',///新增客服
   update_custom: title +'config/update_custom',///新增客服
   delete_custom: title +'config/delete_custom',//删除客服
-
+  get_all_order: title +'order/get_all_order',//获取订单列表
+  get_order_message: title +'order/get_order_message',//获取订单详情
+  export_xls: title + 'order/export_xls',//下载
 }
 
 export default api

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="63" height="63" viewBox="0 0 63 63">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #2d3a4b;
+        stroke-miterlimit: 10;
+        stroke-width: 3px;
+      }
+
+      .cls-2 {
+        fill: #2d3a4b;
+        font-size: 41px;
+        font-family: Helvetica-Bold, Helvetica;
+        font-weight: 700;
+      }
+    </style>
+  </defs>
+  <g id="组_4001" data-name="组 4001" transform="translate(-823.315 -455.613)">
+    <circle id="椭圆_159" data-name="椭圆 159" class="cls-1" cx="30" cy="30" r="30" transform="translate(824.815 457.113)"/>
+    <text id="_" data-name="!" class="cls-2" transform="translate(847.939 503.236)"><tspan x="0" y="0">!</tspan></text>
+  </g>
+</svg>

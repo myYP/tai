@@ -130,6 +130,12 @@ export const constantRouterMap = [
         name: 'appoint',
         component: () => import('src/views/product/appoint'),
         meta: { title: '预约订单', icon: ''}
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: () => import('src/views/product/orderDetail'),
+        meta: { title: '订单详情', icon: ''}
       }
     ]
   },
