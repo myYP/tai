@@ -33,6 +33,7 @@ const api = {
   get_question_message: title +'question/get_question_message',//获取问卷详情
   new_question: title + 'question/new_question',//创建问题
   update_questiion: title + 'question/update_questiion',//更新问题
+  delete_question: title +'question/delete_question',//删除问题
   get_card_list: title +'card/get_card_list',//获取活动列表
   get_card_message: title +'card/get_card_message',//获取活动详情
   new_card: title +'card/new_card',//创建活动

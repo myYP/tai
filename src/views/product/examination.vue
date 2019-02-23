@@ -169,7 +169,7 @@
               this.getProdcut();
               this.$message({
                 type: 'success',
-                message: '上架成功!'
+                message: res.data.message
               });
             }else{
               this.$message({
@@ -201,7 +201,7 @@
               this.getProdcut();
               this.$message({
                 type: 'success',
-                message: '下架成功!'
+                message:res.data.message
               });
             }else{
               this.$message({
@@ -225,7 +225,7 @@
             arr.push(this.multipleSelection[i].medical_id)
           }
         }
-        this.$confirm('此操作将永久删除该管理员, 是否继续?', '提示', {
+        this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -237,7 +237,7 @@
               this.getProdcut();
               this.$message({
                 type: 'success',
-                message: '删除成功!'
+                message: res.data.message
               });
             }else{
               this.$message({

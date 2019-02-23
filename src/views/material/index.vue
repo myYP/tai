@@ -41,6 +41,7 @@
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.science_type"
+              disabled
               active-color="#409EFF"
               inactive-color="#ff4949">
             </el-switch>
@@ -149,10 +150,6 @@
               }else{
                 this.$message.error(res.data.message);
               }
-            })
-            this.$message({
-              type: 'success',
-              message: '删除成功!'
             });
           }).catch(() => {
 

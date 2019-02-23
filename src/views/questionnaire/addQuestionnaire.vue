@@ -20,7 +20,7 @@
                 <svg-icon icon-class="icon-editor"></svg-icon>
                 <p>修改</p>
               </div>
-              <div class="m-icon-div">
+              <div class="m-icon-div" @click="deleteQues(scope.row.question_id)">
                 <svg-icon icon-class="icon-delete"></svg-icon>
                 <p>删除</p>
               </div>
@@ -69,7 +69,31 @@
       },
       editeQues(item,name){
         this.$router.push({path:'/questionnaire/editeQuestionnaire',query:{question_id:name?item :''}})
-      }
+      },
+      deleteQues(item){
+        this.$confirm('此操作将永久删除该问题, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          axios.get(api.delete_question,
+            {
+              params:{
+                question_id:item
+              }
+            }
+          ).then(res => {
+            if(res.data.status == 200){
+              this.getQues();
+              this.$notify.success(res.data.message)
+            }else{
+              this.$message.error(res.data.message);
+            }
+          })
+        }).catch(() => {
+
+        });
+      },
     }
   }
 </script>

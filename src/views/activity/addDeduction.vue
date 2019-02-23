@@ -51,7 +51,7 @@
             <el-table-column align="center" label="操作" v-if="!disabled">
               <template slot-scope="scope">
                 <div class="m-flex-center" >
-                  <div class="m-icon-div" >
+                  <div class="m-icon-div" @click="deleteProduct(scope.$index)">
                     <svg-icon icon-class="icon-delete"></svg-icon>
                     <p>删除</p>
                   </div>
@@ -220,7 +220,10 @@
           this.multipleSelection = val;
         },
         saveProduct(){
-          this.form.medical_list = this.form.medical_list.concat(this.multipleSelection);
+          let arr = [];
+          arr = this.form.medical_list.concat(this.multipleSelection);
+          let x = new Set(arr);
+          this.form.medical_list = [...x];
           this.show_prop = false;
         },
         saveActivity(){
@@ -250,6 +253,22 @@
         },
         cancelTab(){
           this.reload();
+        },
+        deleteProduct(index){
+          let that = this;
+          this.$confirm('确认删除该商品吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            that.form.medical_list.splice(index,1);
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }).catch(() => {
+
+          });
         }
       }
     }
