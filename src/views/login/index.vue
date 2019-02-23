@@ -37,9 +37,9 @@
           <div class="tips">
           </div>
         </el-form>
-        <div style="text-align: right;color: #889AA4;">
-          <span>忘记密码？</span>
-        </div>
+        <!--<div style="text-align: right;color: #889AA4;">-->
+          <!--<span>忘记密码？</span>-->
+        <!--</div>-->
       </el-col>
     </el-row>
 
