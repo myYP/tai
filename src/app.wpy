@@ -99,7 +99,7 @@ page{
       onLaunch() {
           wx.setStorage({
               'key':'token',
-              'data':'NjcxOTUxNWUtMzUzMi0xMWU5LWE5NjQtNTgwMGUzMTE5ZDRhIzIwMTktMDItMjEgMDE6MTA6MjE='
+              'data':'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
           });
       }
 

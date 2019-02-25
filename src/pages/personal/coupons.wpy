@@ -3,7 +3,7 @@
         <view class="m-coupons-top">
             <view class="m-top">
                 <view class="m-search-box" >
-                    <input bindinput="bindCodeInput" placeholder="请输入兑换码"/>
+                    <input vlaue="{{cardno_no}}" bindinput="bindCodeInput" placeholder="请输入兑换码"/>
                     <image class="m-icon-search" style="width: 30rpx;height:30rpx;margin: 0 20rpx;" src="../../images/icon-close.png" />
                 </view>
                 <view class="m-search-btn" @tap="codeAdd">兑换</view>
@@ -21,13 +21,13 @@
                             <view class="m-one-content-h">
                                 {{item.medical_list[0].medical_name}}
                             </view>
-                            <view class="m-one-content-p">{{item.medical_list[0].card_start_time}}—{{item.medical_list[0].card_end_time}}可用</view>
+                            <view class="m-one-content-p">{{item.card_start_time}}—{{item.card_end_time}}可用</view>
                         </view>
                         <image wx:if="{{item.card_status == '可使用'}}" src="../../images/icon-coupon-can.png"></image>
                         <image wx:if="{{item.card_status == '已使用'}}" src="../../images/icon-coupon-done.png"></image>
                         <image wx:if="{{item.card_status == '已失效'}}" src="../../images/icon-coupon-cancel.png"></image>
                     </view>
-                    <view class="m-coupons-more m-can">
+                    <view class="m-coupons-more m-can" @tap="goList({{item}})">
                         查看商品
                         <image src="../../images/icon-more-active.png"></image>
                     </view>
@@ -83,7 +83,7 @@
                     let arr = res.data.data;
                     let can = [],no=[],have=[];
                     for(let i=0;i<arr.length;i++){
-                        if(arr[i].card_status == '可使用'){
+                        if(arr[i].card_status == '可用'){
                             can.push(arr[i])
                         }else if(arr[i].card_status == '已使用'){
                             no.push(arr[i])
@@ -91,9 +91,9 @@
                             have.push(arr[i])
                         }
                     }
-                    that.can_data = [].concat(can);
-                    that.no_data = [].concat(no);
-                    that.have_data = [].concat(have);
+                    that.can_use = [].concat(can);
+                    that.no_use = [].concat(no);
+                    that.have_use = [].concat(have);
                     that.list_data = [].concat(can);
                     that.$apply();
                     tip.loaded();
@@ -119,18 +119,24 @@
             },
             codeAdd(){
                 let that = this;
+                if(!that.cardno_no){
+                    tip.error('请先填写兑换码');
+                    return false;
+                }
                 wx.getStorage({
                     key: 'token',
                     success: function(res){
                         wx.request({
-                            url: api.add_to_my_package + '?token=' + res.data, //仅为示例，并非真实的接口地址
+                            url: api.add_to_my_package,
                             data: {
+                                token:res.data,
                                 cardno_no:that.cardno_no
                             },
                             header: {
                                 'content-type': 'application/json' // 默认值
                             },
                             success: function(responsse) {
+                                that.cardno_no = '';
                                 that.getCard(res.data);
                                 that.$apply();
                                 tip.success(responsse.data.message);
@@ -153,9 +159,25 @@
                     }
                     arr[index].active = true;
                     this.nav = [].concat(arr);
-                    this.list_data = this[arr[index].value];
+                    let value = arr[index].value;
+                    // switch (value){
+                    //     case 'can_use':
+                    //
+                    //         console.log(this.list_data,this.can_use);
+                    //         break;
+                    //     case 'no_use':
+                    //         this.list_data = this.no_use;
+                    //         break;
+                    //     case 'have_use':
+                    //         this.list_data = this.have_use;
+                    //         break;
+                    // }
+                    this.list_data = [].concat(this[arr[index].value]);
                     this.$apply();
                 }
+            },
+            goList(){
+
             }
         }
     }
@@ -258,13 +280,13 @@
                 .m-one-content-p{
                     font-size: 20rpx;
                     color: #B1B1B1;
-                    margin: 18rpx 0 ;
+                    margin: 18rpx 0  0;
                 }
                 .m-coupons-more{
                     width: 455rpx;
                     .flex-row(flex-end);
                     font-size: 20rpx;
-                    margin-top: 50rpx;
+                    margin-top: 40rpx;
                     image{
                         width: 24rpx;
                         height: 24rpx;

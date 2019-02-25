@@ -20,14 +20,16 @@
             </view>
             <view>
                 <view class="m-content-one">
-                    <span>{{detail_data.medical_volume}}人购买</span>
-                    <image src="../../images/icon-share.png" class="m-icon-share"></image>
+                    <span style="display: block;width: 88%;">{{detail_data.medical_volume}}人购买</span>
+                    <button open-type="share" class="m-share-btn">
+                        <image src="../../images/icon-share.png" class="m-icon-share" ></image>
+                    </button>
                 </view>
-                <view class="m-content-one">
+                <view class="m-content-one" @tap="showMore">
                     <span>体检方式</span>
                     <image src="../../images/icon-more.png"></image>
                 </view>
-                <view class="m-content-one">
+                <view class="m-content-one" @tap="showMore">
                     <span>体检用户</span>
                     <image src="../../images/icon-more.png"></image>
                 </view>
@@ -36,7 +38,7 @@
 
         <image src="../../images/swide.png" class="m-detail-img"></image>
 
-        <view class="m-modal" wx:if="{{show_modal}}">
+        <view class="m-modal" wx:if="{{show_modal}}" bindtouchstart='touchStart' bindtouchend="touchEnd">
             <view class="m-modal-state">
                 <view class="m-detail-info">
                     <image src="../../images/swide.png" class="m-modal-detail-img"></image>
@@ -53,22 +55,22 @@
                 >
                      <view class="m-sku-h">体检方式</view>
                     <view>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                        <picker bindchange="bindPickerChange" value="{{loc1}}" range="{{loc_data1}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
                             <view class="m-sku">
-                                <span>定点医院选择</span>
+                                <span>{{loc_data1[loc1].location_name}}</span>
                                 <image src="../../images/icon-select.png" class="m-icon-select"></image>
                             </view>
                         </picker>
 
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                        <picker bindchange="bindPickerChange" value="{{loc2}}" range="{{loc_data2}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
                             <view class="m-sku">
-                                <span>直营门店</span>
+                                <span>{{loc_data2[loc2].location_name}}</span>
                                 <image src="../../images/icon-select.png" class="m-icon-select"></image>
                             </view>
                         </picker>
@@ -76,12 +78,12 @@
                     </view>
                     <view class="m-sku-h">体检用户</view>
                     <view>
-                        <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                        <picker bindchange="bindPickerChange" value="{{user}}" range="{{user_list}}" range-key="examiner_name">
                             <!--<view class="picker">-->
                                 <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
                             <view class="m-sku">
-                                <span>体检用户选择</span>
+                                <span>{{user_list[user].examiner_name}}</span>
                                 <image src="../../images/icon-select.png" class="m-icon-select"></image>
                             </view>
                         </picker>
@@ -90,7 +92,10 @@
             </view>
         </view>
 
-        <view class="m-detail-btn" @tap="toBuy">立即购买</view>
+        <view class="m-detail-btn" >
+            <span @tap="addCar">立即购买</span>
+            <span class="now-buy" @tap="toBuy">加入购物车</span>
+        </view>
     </view>
 </template>
 <script>
@@ -114,8 +119,12 @@
             interval: 3000,
             duration: 1000,
             scrollTop:100,
-            array: ['美国', '中国', '巴西', '日本'],
-            index:0
+            loc_data1:[],
+            loc_data2:[],
+            loc1:0,
+            loc2:0,
+            user_list:[],
+            user:0
         }
         getDetail(id) {
             let that = this;
@@ -138,14 +147,104 @@
                 }
             })
         }
+        getLoc(id,type) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_location, //仅为示例，并非真实的接口地址
+                data: {
+                    medical_id:id,
+                    location_type:type
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    // that.detail_data = res.data.data;
+                    if(type == 0){
+                        that.loc_data1 = res.data.data;
+                    }else{
+                        that.loc_data2 = res.data.data;
+                    }
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        getUserList(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_my_medical_user, //仅为示例，并非真实的接口地址
+                data: {
+                    token:token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.user_list = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
         onLoad(options){
             this.getDetail(options.medical_id);
+            this.getLoc(options.medical_id,0);
+            this.getLoc(options.medical_id,1);
+            let that =this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    // _this.getWorkList(res.data,_this.select_city.areano);
+                    that.getUserList(res.data);
+                }
+            });
+        }
+        onShareAppMessage(res) {
+            // if (res.from === 'button') {
+            // }
+            // return {
+            //     title: '转发',
+            //     path: '/pages/index/community/topic/topic',
+            //     success: function (res) {
+            //         console.log('成功', res)
+            //     }
+            // }
         }
         methods = {
             toBuy(){
                 wx.navigateTo({
                     url: '/pages/index/playOrder'
                 });
+            },
+            showMore(){
+                this.show_modal = true;
+            },
+            touchStart(e) {
+                // console.log(e)
+                this.setData({
+                    "touch.x": e.changedTouches[0].clientX,
+                    "touch.y": e.changedTouches[0].clientY
+                });
+            },
+            touchEnd(e) {
+                // console.log(e)
+                this.setData({
+                    "touch.x": e.changedTouches[0].clientX,
+                    "touch.y": e.changedTouches[0].clientY
+                });
+            },
+            //添加到购物车
+            addCar(){
+
             }
         }
     }
@@ -183,6 +282,16 @@
                     width: 32rpx;
                     height: 32rpx;
                 }
+                .m-share-btn{
+                    background-color: #fff;
+                    border: none;
+                    line-height: normal;
+                    /*position: static;*/
+                    text-align: right;
+                    &::after{
+                        border: none;
+                    }
+                }
             }
         }
         .m-detail-img{
@@ -197,8 +306,15 @@
             height: 100rpx;
             line-height: 100rpx;
             text-align: center;
-            background-color: @common-color;
             color: #fff;
+            span{
+                width: 50%;
+                background-color: @common-color;
+                display: inline-block;
+                &.now-buy{
+                    background-color: #9A0000;
+                }
+            }
         }
         .m-modal{
             position: fixed;
