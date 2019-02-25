@@ -58,6 +58,7 @@ const api = {
   get_order_message: title +'order/get_order_message',//获取订单详情
   export_xls: title + 'order/export_xls',//下载
   get_order_count: title +'order/get_order_count',//获取首页订单总数
+  update_order: title +'order/update_order',//更新订单
   get_loadpic_list: title +'config/get_loadpic_list',//获取轮播图列表
   add_loadpic: title +'config/add_loadpic',//新增轮播图
   update_loadpic: title +'config/update_loadpic',//修改轮播图

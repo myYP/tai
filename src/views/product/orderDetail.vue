@@ -26,18 +26,18 @@
             <svg-icon icon-class="icon-order-status"/>
             <div>
               <p class="m-status-text">
-                订单状态：买家已支付，等待样本寄送。
+                订单状态：{{allData.order_status}}。
               </p>
               <div class="m-step-box m-flex-between">
                 <step :list="list"></step>
-                <span class="m-btn">提交进度</span>
+                <span class="m-btn" v-if="!(list[0].active && !list[1].active)" @click="changeStatus">提交进度</span>
               </div>
               <el-form :inline="true" :model="allData" class="demo-form-inline">
                 <el-form-item label="寄样人">
-                  <el-input v-model="allData.order_user_send" placeholder=""></el-input>
+                  <el-input v-model="allData.order_user_send" placeholder="" :disabled="list[0].active"></el-input>
                 </el-form-item>
                 <el-form-item label="单号">
-                  <el-input v-model="allData.order_no_send" placeholder=""></el-input>
+                  <el-input v-model="allData.order_no_send" placeholder="" :disabled="list[0].active"></el-input>
                 </el-form-item>
               </el-form>
             </div>
@@ -81,8 +81,12 @@
         </el-table-column>
       </el-table>
       <p class="m-order-text">订单共1件商品，总计：{{allData.order_price}}</p>
-      <div class="m-bottom m-flex-center">
-        <span class="m-btn">上传报告</span>
+      <div class="m-bottom m-flex-center" v-if="list[2].active">
+        <span class="m-box">
+            <span class="m-btn">上传报告</span>
+            <input type="file" name="file" @change="uploadPdf" class="m-export-btn" id="main"/>
+        </span>
+
       </div>
     </div>
 </template>
@@ -118,7 +122,8 @@
                 time:'',
                 active:false
               }
-            ]
+            ],
+            order_pdf:''
           }
       },
       components:{
@@ -128,7 +133,7 @@
           this.getDetail();
       },
       methods:{
-          getDetail(){
+        getDetail(){
             axios.get(api.get_order_message,{
               params: {
                 order_id:this.$route.query.order_id,
@@ -138,11 +143,79 @@
                 arr.push(res.data.data);
                 this.tableData = [].concat(arr);
                 this.allData =  res.data.data;
+                this.list = [].concat(res.data.data.status_type)
               }else{
                 this.$message.error(res.data.message);
               }
             })
+          },
+        uploadPdf(event){
+          let form = new FormData();
+          form.append("file", event.target.files[0]);
+          form.append("FileType", 'order_pdf');
+          axios.post(api.upload_files ,form).then(res => {
+            if(res.data.status == 200){
+              this.order_pdf = res.data.data;
+              var file = document.getElementById('main');
+              file.value ='';
+            }else{
+              this.$message({
+                type: 'error',
+                message: '服务器请求失败，请稍后再试 '
+              });
+            }
+          },error =>{
+            this.$message({
+              type: 'error',
+              message: '服务器请求失败，请稍后再试 '
+            });
+          })
+        },
+        changeStatus(){
+          let params = {},update_type=1;
+          if(this.list[2].active){
+            if(!this.order_pdf){
+              this.$message({
+                type: 'error',
+                message: '请上传报告'
+              });
+              return false;
+            }
+            params.order_pdf = this.order_pdf;
+            update_type = 4
+          }else if(this.list[1].active){
+            update_type = 6
+          }else{
+            if(!this.allData.order_user_send){
+              this.$message({
+                type: 'error',
+                message: '请填写寄件人'
+              });
+              return false;
+            }else if(!this.allData.order_no_send){
+              this.$message({
+                type: 'error',
+                message: '请填写单号'
+              });
+              return false;
+            }
+            params = {
+              order_user_send:this.allData.order_user_send,
+              order_no_send: this.allData.order_no_send
+            }
           }
+          axios.post(api.update_order +'?order_id='+this.$route.query.order_id + '&update_type=' +update_type,params).then(res => {
+            if(res.data.status == 200){
+              this.$notify.success(res.data.message);
+              this.$router.push('/product/appoint');
+            }else{
+              this.$message({
+                type: 'error',
+                message: res.data.message
+              });
+            }
+          })
+        }
       }
     }
 </script>
@@ -181,7 +254,7 @@
       margin-right: 20px;
     }
     .m-step-box{
-      margin-bottom: 30px;
+      margin-bottom: 50px;
     }
     .m-status-text{
       line-height: 63px;
@@ -194,6 +267,19 @@
   }
   .m-bottom{
     margin-top: 50px;
+    .m-box{
+      position: relative;
+      display: inline-block;
+      overflow: hidden;
+      .m-export-btn{
+        position: absolute;
+        right: 0;
+        top: 0;
+        opacity: 0;
+        -ms-filter: alpha(opacity=0);
+      }
+    }
+
   }
 }
 </style>

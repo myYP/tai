@@ -9,7 +9,7 @@
           <span class="m-progress-line" ></span>
         </div>
         <div style="height: 0.15rem">
-          <div class="time">{{item.time == '' ?'未完成':item.time}}</div>
+          <div class="time">{{item.time == null ?'未完成':item.time}}</div>
         </div>
       </div>
     </template>
@@ -47,6 +47,10 @@
   align-items: center;
   margin: 10px;
   .m-progress-one{
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
     p{
       font-size: 16px;
       line-height: 40px;
@@ -57,6 +61,7 @@
       margin-top: 10px;
       text-align: center;
       color: #B8B8B8;
+      width: 80px;
     }
     .m-progress-icon{
       display: flex;
