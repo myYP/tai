@@ -1,12 +1,14 @@
 <template>
   <div class="container m-index">
-    <el-row>
-      <el-col :span="6">
-        <el-card class="box-card">
-          <svg-icon icon-class="icon-order-index"/>
-          <div class="m-order-content">
-            <p>订单管理</p>
-            <p>13</p>
+    <el-row v-if="order_data">
+      <el-col :span="6" >
+        <el-card  >
+          <div class="box-card" @click="toOrder">
+            <svg-icon icon-class="icon-order-index"/>
+            <div class="m-order-content">
+              <p>订单管理</p>
+              <p>{{order_data.count}}</p>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -25,14 +27,7 @@
 
     data() {
       return {
-        index_data:null,
-        normal_data:null,
-        is_admin:false,
-        show_message:false,
-        form:{
-          telphone:'',
-          message:''
-        }
+       order_data:null
       }
     },
 
@@ -40,45 +35,22 @@
 
     methods: {
       getData(){
-        axios.get(api.get_index_message,{
-          params:{
-            token:localStorage.getItem('token')
-          }
-        }).then(res => {
+        axios.get(api.get_order_count).then(res => {
             if(res.data.status == 200){
-              console.log(res.data.message.indexOf('超级管理员'))
-              if(res.data.message.indexOf('超级管理员') != -1){
-                this.index_data = res.data.data;
-                this.is_admin = true;
-              }else{
-                this.normal_data = res.data.data;
-                this.is_admin = false;
-              }
+
+             this.order_data = res.data.data;
 
             }
         })
       },
-      /*改变路由*/
-      changeRoute(path,name,item){
-        switch (name){
-          case 'notice':
-            this.$router.push({path:path,query:{notice_id:item.notice_id,is_read:this.is_admin}});
-            break;
-          case 'approval':
-            this.$router.push({path:path,query:{approval_id:item.approval_id}});
-            break;
-          case 'module':
-            this.$router.push({path:path,query:{mould_id:item.mould_id}});
-            break;
-          default:
-            this.$router.push({path:path});
-        }
-
-      },
+      toOrder(){
+        console.log('asdasas')
+        this.$router.push('/product/appoint')
+      }
     },
 
     created() {
-      // this.getData();
+      this.getData();
     }
   }
 </script>
@@ -87,6 +59,10 @@
   @import "../../styles/myIndex";
 .m-index{
     .box-card{
+      display: flex;
+      flex-flow: row;
+      align-items: flex-start;
+      justify-content: flex-start;
       .svg-icon{
         height: 80px;
         width: 80px;
