@@ -33,7 +33,6 @@ page{
           'pages/index/index',
           'pages/personal/index',
           'pages/index/detail',
-
           'pages/index/playOrder',
           'pages/index/physicalList',
           'pages/personal/login',
@@ -100,7 +99,7 @@ page{
       onLaunch() {
           wx.setStorage({
               'key':'token',
-              'data':'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
+              'data':'NjcxOTUxNWUtMzUzMi0xMWU5LWE5NjQtNTgwMGUzMTE5ZDRhIzIwMTktMDItMjEgMDE6MTA6MjE='
           });
       }
 

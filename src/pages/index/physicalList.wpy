@@ -29,12 +29,14 @@
     import regeneratorRuntime from '../../utils/runtime'
     export default class physicalList extends wepy.page {
         config = {
-            navigationBarTitleText: '体检项目'
+            navigationBarTitleText: '体检项目',
+            enablePullDownRefresh:true
         }
         data = {
             page_info:{
-                cur_page:0,
-                page_size:10
+                cur_page:1,
+                page_size:5,
+                total_pages:0
             },
             medical_data:[]
         }
@@ -48,7 +50,7 @@
                     url: api.get_medical_list, //仅为示例，并非真实的接口地址
                     data: {
                         use_type: 0,
-                        page_num:Number(that.page_info.cur_page) +1 || 1,
+                        page_num:Number(that.page_info.cur_page),
                         page_size:that.page_info.page_size,
                         medical_name:''
                     },
@@ -56,7 +58,17 @@
                         'content-type': 'application/json' // 默认值
                     },
                     success: function(res) {
-                        that.medical_data = res.data.data;
+                        if(res.data.data.length == 0 || res.data.data == null){
+                            tip.loaded();
+                            return false;
+                        }
+                        if(that.page_info.cur_page == 0){
+                            that.medical_data = res.data.data;
+                        }else{
+                            that.medical_data = that.medical_data.concat(res.data.data);
+                        }
+                        that.page_info.cur_page = that.page_info.cur_page +1;
+                        that.page_info.total_pages = res.data.total_page;
                         that.$apply();
                         tip.loaded();
                     },
@@ -68,6 +80,21 @@
         onLoad(options){
            this.getMedicalList();
 
+        }
+        onPullDownRefresh(){
+            wx.stopPullDownRefresh();
+        }
+        onReachBottom(){
+            let _this = this;
+            if(_this.page_info.cur_page == _this.page_info.total_pages +1){
+                wx.showToast({ //如果全部加载完成了也弹一个框
+                    title: '我也是有底线的',
+                    icon: 'success',
+                    duration: 1000
+                });
+            }else{
+                this.getMedicalList();
+            }
         }
         methods = {
             goDetail(item){

@@ -3,69 +3,33 @@
         <view class="m-coupons-top">
             <view class="m-top">
                 <view class="m-search-box" >
-                    <p>请输入兑换码</p>
+                    <input bindinput="bindCodeInput" placeholder="请输入兑换码"/>
                     <image class="m-icon-search" style="width: 30rpx;height:30rpx;margin: 0 20rpx;" src="../../images/icon-close.png" />
                 </view>
-                <view class="m-search-btn">兑换</view>
+                <view class="m-search-btn" @tap="codeAdd">兑换</view>
             </view>
             <view class="m-navList">
-                <view class="m-nav active">可使用</view>
-                <view class="m-nav">已使用</view>
-                <view class="m-nav">已失效</view>
+                <view class="m-nav {{item.active? 'active':''}}" @tap="changeNav({{index}})"  wx:for="{{nav}}" wx:for-index="index" wx:key="index"  wx:for-item="item">{{item.name}}</view>
             </view>
         </view>
         <view class="m-content">
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
+            <view class="m-one-content" wx:for="{{list_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+                <image src="{{item.medical_list[0].medical_pic}}"></image>
                 <view>
                     <view class="m-coupons-right">
                         <view>
                             <view class="m-one-content-h">
-                                体检项目1体检项目1体检项目1体检项目1体检123234
+                                {{item.medical_list[0].medical_name}}
                             </view>
-                            <view class="m-one-content-p">2018/06/12—2018/06/12可用</view>
+                            <view class="m-one-content-p">{{item.medical_list[0].card_start_time}}—{{item.medical_list[0].card_end_time}}可用</view>
                         </view>
-                        <image src="../../images/icon-coupon-can.png"></image>
+                        <image wx:if="{{item.card_status == '可使用'}}" src="../../images/icon-coupon-can.png"></image>
+                        <image wx:if="{{item.card_status == '已使用'}}" src="../../images/icon-coupon-done.png"></image>
+                        <image wx:if="{{item.card_status == '已失效'}}" src="../../images/icon-coupon-cancel.png"></image>
                     </view>
                     <view class="m-coupons-more m-can">
                         查看商品
                         <image src="../../images/icon-more-active.png"></image>
-                    </view>
-                </view>
-            </view>
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view>
-                    <view class="m-coupons-right">
-                        <view>
-                            <view class="m-one-content-h">
-                                体检项目1体检项目1体检项目1体检项目1体检123234
-                            </view>
-                            <view class="m-one-content-p">2018/06/12—2018/06/12可用</view>
-                        </view>
-                        <image src="../../images/icon-coupon-done.png"></image>
-                    </view>
-                    <view class="m-coupons-more">
-                        查看商品
-                        <image src="../../images/icon-more.png"></image>
-                    </view>
-                </view>
-            </view>
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view>
-                    <view class="m-coupons-right">
-                        <view>
-                            <view class="m-one-content-h">
-                                体检项目1体检项目1体检项目1体检项目1体检123234
-                            </view>
-                            <view class="m-one-content-p">2018/06/12—2018/06/12可用</view>
-                        </view>
-                        <image src="../../images/icon-coupon-cancel.png"></image>
-                    </view>
-                    <view class="m-coupons-more">
-                        查看商品
-                        <image src="../../images/icon-more.png"></image>
                     </view>
                 </view>
             </view>
@@ -74,13 +38,126 @@
 </template>
 <script>
     import wepy from 'wepy';
-
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
     export default class coupons extends wepy.page {
         config = {
             navigationBarTitleText: '满减券'
         }
-        data = {}
-        methods = {}
+        data = {
+            can_use:[],
+            have_use:[],
+            no_use:[],
+            list_data:[],
+            nav:[
+                {
+                    name:'可使用',
+                    active:true,
+                    value:'can_use'
+                },
+                {
+                    name:'已使用',
+                    active:false,
+                    value:'no_use'
+                },
+                {
+                    name:'已失效',
+                    active:false,
+                    value:'have_use'
+                }
+            ],
+            cardno_no:''
+        }
+        getCard(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_my_package,
+                data: {
+                    token:token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    let arr = res.data.data;
+                    let can = [],no=[],have=[];
+                    for(let i=0;i<arr.length;i++){
+                        if(arr[i].card_status == '可使用'){
+                            can.push(arr[i])
+                        }else if(arr[i].card_status == '已使用'){
+                            no.push(arr[i])
+                        }else{
+                            have.push(arr[i])
+                        }
+                    }
+                    that.can_data = [].concat(can);
+                    that.no_data = [].concat(no);
+                    that.have_data = [].concat(have);
+                    that.list_data = [].concat(can);
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(){
+            let that =this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    // _this.getWorkList(res.data,_this.select_city.areano);
+                    that.getCard(res.data);
+                }
+            });
+        }
+        methods = {
+            bindCodeInput(e){
+                this.cardno_no = e.detail.value;
+            },
+            codeAdd(){
+                let that = this;
+                wx.getStorage({
+                    key: 'token',
+                    success: function(res){
+                        wx.request({
+                            url: api.add_to_my_package + '?token=' + res.data, //仅为示例，并非真实的接口地址
+                            data: {
+                                cardno_no:that.cardno_no
+                            },
+                            header: {
+                                'content-type': 'application/json' // 默认值
+                            },
+                            success: function(responsse) {
+                                that.getCard(res.data);
+                                that.$apply();
+                                tip.success(responsse.data.message);
+                            },
+                            error:function (error) {
+                                tip.loaded();
+                            }
+                        })
+                    }
+                });
+
+            },
+            changeNav(index){
+                if(this.nav[index].active){
+                    return false;
+                }else{
+                    let arr = [].concat(this.nav);
+                    for(let i=0;i<arr.length;i++){
+                        arr[i].active = false;
+                    }
+                    arr[index].active = true;
+                    this.nav = [].concat(arr);
+                    this.list_data = this[arr[index].value];
+                    this.$apply();
+                }
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
