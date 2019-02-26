@@ -93,8 +93,8 @@
         </view>
 
         <view class="m-detail-btn" >
-            <span @tap="addCar">立即购买</span>
-            <span class="now-buy" @tap="toBuy">加入购物车</span>
+            <span @tap="addCar">加入购物车</span>
+            <span class="now-buy" @tap="toBuy">立即购买</span>
         </view>
     </view>
 </template>
@@ -107,6 +107,7 @@
             navigationBarTitleText: '体检详情'
         }
         data = {
+            medical_id:'',
             detail_data:null,
             show_modal:false,
             imgUrls: [
@@ -196,6 +197,7 @@
             })
         }
         onLoad(options){
+            this.medical_id = options.medical_id;
             this.getDetail(options.medical_id);
             this.getLoc(options.medical_id,0);
             this.getLoc(options.medical_id,1);
@@ -221,8 +223,19 @@
         }
         methods = {
             toBuy(){
+                let params = [{
+                    order_location:this.loc_data1[this.loc1].location_name,
+                    order_location_type:this.loc_data2[this.loc2].location_name,
+                    examiner_name:this.user_list[this.user].examiner_name,
+                    examiner_telphone:this.user_list[this.user].examiner_telphone,
+                    medical_price:this.detail_data.medical_price,
+                    medical_pic:this.detail_data.medical_pic,
+                    medical_name:this.detail_data.medical_name,
+                    medical_id:this.detail_data.medical_id,
+                    order_want_time: ['','']
+                }]
                 wx.navigateTo({
-                    url: '/pages/index/playOrder'
+                    url: '/pages/index/playOrder?params='+ JSON.stringify( params )
                 });
             },
             showMore(){

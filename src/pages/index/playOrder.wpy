@@ -1,84 +1,213 @@
 <template>
     <view class="m-playOrder">
-        <view class="m-title">
-            <view class="m-raw m-title">
-                <span>体检用户：某某某</span>
-                <span>15700000000</span>
+        <view class="m-one-order" wx:for="{{form}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+            <view class="m-title">
+                <view class="m-raw m-title">
+                    <span>体检用户：{{item.examiner_name}}</span>
+                    <span>{{item.examiner_telphone}}</span>
+                </view>
+            </view>
+            <view class="m-order-info">
+                <view class="m-one-content">
+                    <image src="{{item.medical_pic}}"></image>
+                    <view class="m-content-right">
+                        <view class="m-one-content-h">
+                            {{item.medical_name}}
+                        </view>
+                        <view class="m-one-content-p">定点医院：{{item.order_location}} </view>
+                        <view class="m-one-content-p"> 直营门店：{{item.order_location_type}}</view>
+                        <view class="m-red">￥{{item.medical_price}}</view>
+                    </view>
+                </view>
+
+                <view class="m-order-detail">
+                    <view class="m-raw m-flex-between">
+                        <span>预约抽血时间</span>
+                        <!--<view class="m-flex-between">-->
+                            <picker
+                                    mode="date"
+                                    id="date{{index}}"
+                                    value="{{item.order_want_time[0]}}"
+                                    start="2019-02-01"
+                                    bindchange="bindDateChange"
+                            >
+                                <view class="picker m-black">
+                                    {{item.order_want_time[0]}}
+                                </view>
+                            </picker>
+                            <picker
+                                    mode="time"
+                                    id="time{{index}}"
+                                    value="{{item.order_want_time[1]}}"
+                                    start="09:01"
+                                    end="21:01"
+                                    bindchange="bindTimeChange"
+                            >
+                                <view class="picker m-black">
+                                    {{item.order_want_time[1]}}
+                                </view>
+                            </picker>
+                        <!--</view>-->
+                    </view>
+                </view>
             </view>
         </view>
-        <view class="m-order-info">
-            <view class="m-one-content">
-                <image src="../../images/swide.png"></image>
-                <view class="m-content-right">
-                    <view class="m-one-content-h">
-                        血常规基础套餐
-                    </view>
-                    <view class="m-one-content-p">适用人群：所有人群</view>
-                    <view class="m-red">￥899</view>
-                </view>
-            </view>
-
+        <view class="m-one-order">
             <view class="m-order-detail">
-                <view class="m-raw m-flex-between">
-                    <span>预约抽血时间</span>
-                    <picker
-                            mode="time"
-                            value="{{time}}"
-                            start="09:01"
-                            end="21:01"
-                            bindchange="bindTimeChange"
-                    >
-                        <view class="picker m-black">
-                             {{time}}
-                        </view>
-                    </picker>
-                </view>
                 <view class="m-raw m-flex-start">
                     <span>买家留言：</span>
-                    <textarea  auto-height placeholder="选填" class="m-textarea"/>
+                    <textarea value="{{ordermain_message}}" bindblur="bindTextAreaBlur" auto-height placeholder="选填" class="m-textarea"/>
                 </view>
                 <view class="m-raw m-flex-between">
                     <span>优惠选择</span>
-                    <picker
-                            mode="time"
-                            value="{{time}}"
-                            start="09:01"
-                            end="21:01"
-                            bindchange="bindTimeChange"
-                    >
-                        <view class="picker">
-                            {{time}}
+                    <picker bindchange="bindPickerChange" value="{{card_index}}" range="{{can_use}}" range-key="card_name">
+                        <!--<view class="picker">-->
+                        <!--当前选择：{{array[index]}}-->
+                        <!--</view>-->
+                        <view class="m-sku">
+                            <span wx:if="{{can_use[card_index].card_name}}">{{can_use[card_index].card_name}}</span>
+                            <span wx:else>无优惠</span>
                             <image src="../../images/icon-more.png"></image>
                         </view>
                     </picker>
                 </view>
-                <view class="m-raw m-flex-between">
-                    <span>付款方式</span>
-                    <span class="m-black">微信支付</span>
-                </view>
             </view>
         </view>
-        <view class="m-detail-btn" >确认支付</view>
+        <view class="m-order-footer">
+            <view class="m-total">
+                <span>合计：<span class="m-price">￥1798.0</span></span>
+                <span>支付方式：<span class="m-black">微信支付</span></span>
+            </view>
+            <view class="m-detail-btn" @tap="playOrder">确认支付</view>
+        </view>
+
     </view>
 </template>
 <script>
     import wepy from 'wepy';
-
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
     export default class playOrder extends wepy.page {
         config = {
             navigationBarTitleText: '确认订单'
         }
         data = {
+            date:'2019-02-27',
             time: '12:01',
+            form:[],
+            ordermain_message:'',
+            cardpackage_id:'',
+            can_use:[],
+            card_index:-1
         }
-        methods = {}
+        getCard(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_my_package,
+                data: {
+                    token:token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    let arr = res.data.data;
+                    let can = [];
+                    for(let i=0;i<arr.length;i++){
+                        if(arr[i].card_status == '可用'){
+                            can.push(arr[i])
+                        }
+                    }
+                    that.can_use = [].concat(can);
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+            let that = this;
+            let arr = [].concat(this.form);
+            let myDate = new Date();
+            arr = JSON.parse(options.params);
+            for(let i=0;i<arr.length;i++){
+                arr[i].order_want_time[0] = myDate.getFullYear() + '-' + (myDate.getMonth() +1 <10?'0' +(myDate.getMonth() +1 ):(myDate.getMonth() +1) )+'-' +myDate.getDate()
+                arr[i].order_want_time[1] = '09:01'
+            }
+            this.form = [].concat(arr);
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    that.getCard(res.data);
+                }
+            });
+        }
+        methods = {
+            bindPickerChange(){
+                this.card_index = e.detail.value;
+            },
+            bindTextAreaBlur(e){
+                this.ordermain_message = e.detail.value;
+            },
+            bindTimeChange(e){
+                let index = Number(e.currentTarget.id.slice(4));
+                let arr = [].concat(this.form);
+                arr[index].order_want_time[1] = e.detail.value;
+                this.form = [].concat(arr);
+            },
+            bindDateChange(e){
+                let index = Number(e.currentTarget.id.slice(4));
+                let arr = [].concat(this.form);
+                arr[index].order_want_time[0] = e.detail.value;
+                this.form = [].concat(arr);
+            },
+            playOrder(){
+                let that = this;
+                let arr = [].concat(this.form);
+                for(let i=0;i<arr.length;i++){
+                  arr[i].order_want_time = arr[i].order_want_time.join(' ');
+                }
+                this.form = [].concat(arr);
+                wx.getStorage({
+                    key: 'token',
+                    success: function(res){
+                        wx.request({
+                            url: api.make_order + '?token='+res.data,
+                            data: {
+                                order_list:that.form,
+                                ordermain_message:that.ordermain_message,
+                                cardpackage_id:that.cardpackage_id
+                            },
+                            method:'POST',
+                            header: {
+                                'content-type': 'application/json' // 默认值
+                            },
+                            success: function(responsse) {
+                                that.$apply();
+                                tip.success(responsse.data.message);
+                            },
+                            error:function (error) {
+                                tip.loaded();
+                            }
+                        })
+                    }
+                });
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
     @import "../../styles/common";
     .m-playOrder{
-        background-color: #fff;
-        padding-top: 40rpx;
+        padding-bottom: 160rpx;
+        .m-one-order{
+            background-color: #fff;
+            padding-top: 40rpx;
+            margin-bottom: 20px;
+        }
         .m-title{
             padding: 0 30rpx 0 44rpx;
             margin-bottom: 40rpx;
@@ -107,13 +236,13 @@
             border-top: 1rpx solid #CCCCCC ;
             border-bottom: 1rpx solid #CCCCCC ;
             image{
-                width: 160rpx;
-                height: 160rpx;
+                width: 180rpx;
+                height: 180rpx;
                 margin-right: 14rpx;
                 border-radius: 10rpx;
             }
             .m-content-right{
-                height: 160rpx;
+                height: 180rpx;
                 display: flex;
                 flex-flow: column;
                 align-items: flex-start;
@@ -164,16 +293,34 @@
                 }
             }
         }
-        .m-detail-btn{
+        .m-order-footer{
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100rpx;
-            line-height: 100rpx;
-            text-align: center;
-            background-color: @common-color;
-            color: #fff;
+            .m-total{
+                background-color: #fff;
+                padding: 20rpx 40rpx;
+                display: flex;
+                flex-flow: row;
+                align-items: center;
+                justify-content: space-between;
+                font-size: 24rpx;
+                color: #999999;
+                .m-price{
+                    color: #D8000D;
+                }
+                .m-black{
+                    color: #333333;
+                }
+            }
+            .m-detail-btn{
+                height: 100rpx;
+                line-height: 100rpx;
+                text-align: center;
+                background-color: @common-color;
+                color: #fff;
+            }
         }
     }
 </style>
