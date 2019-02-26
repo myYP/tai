@@ -55,7 +55,7 @@
                 >
                      <view class="m-sku-h">体检方式</view>
                     <view>
-                        <picker bindchange="bindPickerChange" value="{{loc1}}" range="{{loc_data1}}" range-key="location_name">
+                        <picker bindchange="bindLoc1Change" value="{{loc1}}" range="{{loc_data1}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
@@ -65,7 +65,7 @@
                             </view>
                         </picker>
 
-                        <picker bindchange="bindPickerChange" value="{{loc2}}" range="{{loc_data2}}" range-key="location_name">
+                        <picker bindchange="bindLoc2Change" value="{{loc2}}" range="{{loc_data2}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
@@ -78,7 +78,7 @@
                     </view>
                     <view class="m-sku-h">体检用户</view>
                     <view>
-                        <picker bindchange="bindPickerChange" value="{{user}}" range="{{user_list}}" range-key="examiner_name">
+                        <picker bindchange="bindUserChange" value="{{user}}" range="{{user_list}}" range-key="examiner_name">
                             <!--<view class="picker">-->
                                 <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
@@ -125,7 +125,8 @@
             loc1:0,
             loc2:0,
             user_list:[],
-            user:0
+            user:0,
+            touch_y:0
         }
         getDetail(id) {
             let that = this;
@@ -243,21 +244,55 @@
             },
             touchStart(e) {
                 // console.log(e)
-                this.setData({
-                    "touch.x": e.changedTouches[0].clientX,
-                    "touch.y": e.changedTouches[0].clientY
-                });
+                    this.touch_y= e.changedTouches[0].clientY
             },
             touchEnd(e) {
-                // console.log(e)
-                this.setData({
-                    "touch.x": e.changedTouches[0].clientX,
-                    "touch.y": e.changedTouches[0].clientY
-                });
+               if(e.changedTouches[0].clientY > this.touch_y){
+                   this.show_modal = false;
+               }
+            },
+            bindUserChange(e){
+                this.user = e.detail.value;
+            },
+            bindLoc1Change(e){
+                this.loc1 = e.detail.value;
+            },
+            bindLoc2Change(e){
+                this.loc2 = e.detail.value;
             },
             //添加到购物车
             addCar(){
-
+                let that = this;
+                let params = {
+                    order_location:this.loc_data1[this.loc1].location_name,
+                    order_location_type:this.loc_data2[this.loc2].location_name,
+                    examiner_name:this.user_list[this.user].examiner_name,
+                    examiner_telphone:this.user_list[this.user].examiner_telphone,
+                    medical_price:this.detail_data.medical_price,
+                    medical_pic:this.detail_data.medical_pic,
+                    medical_name:this.detail_data.medical_name,
+                    medical_id:this.detail_data.medical_id
+                }
+                wx.getStorage({
+                    key: 'token',
+                    success: function(res){
+                        wx.request({
+                            url: api.make_cart + '?token='+res.data,
+                            data: params,
+                            method:'POST',
+                            header: {
+                                'content-type': 'application/json' // 默认值
+                            },
+                            success: function(responsse) {
+                                that.$apply();
+                                tip.success(responsse.data.message);
+                            },
+                            error:function (error) {
+                                tip.loaded();
+                            }
+                        })
+                    }
+                });
             }
         }
     }

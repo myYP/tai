@@ -116,7 +116,7 @@
                     <view>{{item.name}}</view>
                 </view>
             </view>
-            <view class="m-content-title m-white">
+            <view class="m-content-title m-white" @tap="goCar">
                 <view class="m-title-name">
                     <image src="../../images/icon-car.png" class="m-icon-title"></image>
                     <span>购物车</span></view>
@@ -221,6 +221,11 @@
             goCoupon(){
                 wx.navigateTo({
                     url: '/pages/personal/coupons'
+                })
+            },
+            goCar(){
+                wx.navigateTo({
+                    url: '/pages/personal/car'
                 })
             },
             goWork(){

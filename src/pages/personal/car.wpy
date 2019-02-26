@@ -1,0 +1,384 @@
+<template>
+    <view class="m-car-page">
+        <view class="m-car-content">
+            <!--<view class="m-one-car">-->
+                <view class="m-one-car touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{items}}" wx:key="">
+                    <view class="content">
+                        <view class="m-product" >
+                            <image src="../../images/icon-radio.png" wx:if="{{!item.click}}" @tap="changeRadio({{index}})" class="m-icon-radio"/>
+                            <image src="../../images/icon-radio-active.png" wx:else @tap="changeRadio({{index}})" class="m-icon-radio"/>
+                            <view class="m-one-car-product">
+                                <image src="{{item.medical_pic[0]}}" class="m-product-img"/>
+                                <view class="m-product-text">
+                                    <view class="m-h">{{item.medical_name}}</view>
+                                    <view>{{item.order_location_type}}-{{item.order_location}}</view>
+                                    <view>体检用户：{{item.examiner_name}}</view>
+                                </view>
+                                <span class="m-price">￥{{item.medical_price}}</span>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="del" catchtap="delCar({{item}})" data-index="{{index}}">删除</view>
+                <!--</view>-->
+            </view>
+        </view>
+        <view class="m-car-footer">
+            <view>
+                <image src="../../images/icon-radio-active.png" @tap="allClick" wx:if="{{all_click}}" class="m-icon-radio"/>
+                <image src="../../images/icon-radio.png" @tap="allClick" wx:else class="m-icon-radio"/>
+                <span>全选</span>
+            </view>
+            <view class="m-total">
+                <span>合计</span>
+                <span class="m-price">￥{{total_money}}</span>
+                <span class="m-btn" @tap="toPlay">结算</span>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+    import wepy from 'wepy';
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
+    export default class car extends wepy.page {
+        config = {
+            navigationBarTitleText: ''
+        }
+        data = {
+            items: [],
+            startX: 0, //开始坐标
+            startY: 0,
+            all_click:false,
+            total_money:0
+        }
+        getCar(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_cart, //仅为示例，并非真实的接口地址
+                data: {
+                    token:token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    let arr = [].concat(res.data.data);
+                    for (var i = 0; i < arr.length; i++) {
+                        arr[i].isTouchMove = false //默认全隐藏删除
+                        arr[i].click = false //默认全隐藏删除
+                    }
+                    that.items = [].concat(arr);
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad() {
+            let that =this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    // _this.getWorkList(res.data,_this.select_city.areano);
+                    that.getCar(res.data);
+                }
+            });
+        }
+        /**
+         * 计算滑动角度
+         * @param {Object} start 起点坐标
+         * @param {Object} end 终点坐标
+         */
+        angle(start, end) {
+            var _X = end.X - start.X,
+                _Y = end.Y - start.Y
+            //返回角度 /Math.atan()返回数字的反正切值
+            return 360 * Math.atan(_Y / _X) / (2 * Math.PI);
+        }
+        methods = {
+            //手指触摸动作开始 记录起点X坐标
+            touchstart(e) {
+                //开始触摸时 重置所有删除
+                this.data.items.forEach(function (v, i) {
+                    if (v.isTouchMove)//只操作为true的
+                        v.isTouchMove = false;
+                })
+                this.startX= e.changedTouches[0].clientX
+                    this.startY= e.changedTouches[0].clientY
+                    this.items = this.data.items
+            },
+            //滑动事件处理
+            touchmove(e) {
+                var that = this,
+                    index = e.currentTarget.dataset.index,//当前索引
+                    startX = that.data.startX,//开始X坐标
+                    startY = that.data.startY,//开始Y坐标
+                    touchMoveX = e.changedTouches[0].clientX,//滑动变化坐标
+                    touchMoveY = e.changedTouches[0].clientY;//滑动变化坐标
+                    //获取滑动角度
+                   let angle = that.angle({ X: startX, Y: startY }, { X: touchMoveX, Y: touchMoveY });
+                that.data.items.forEach(function (v, i) {
+                    v.isTouchMove = false
+                    //滑动超过30度角 return
+                    if (Math.abs(angle) > 30) return;
+                    if (i == index) {
+                        if (touchMoveX > startX) //右滑
+                            v.isTouchMove = false
+                        else //左滑
+                            v.isTouchMove = true
+                    }
+                })
+                //更新数据
+                that.items=that.data.items
+
+            },
+            delCar(item){
+                let that =this;
+                wx.showModal({
+                    title: '提示',
+                    content: '确认从购物车删除这个产品吗',
+                    showCancel: true,
+                    success: res => {
+                        if (res.confirm) {
+
+                            wx.getStorage({
+                                key: 'token',
+                                success: function(res){
+                                    // _this.getWorkList(res.data,_this.select_city.areano);
+                                    tip.loading();
+                                    wx.request({
+                                        url: api.delete_cart +'?token='+res.data, //仅为示例，并非真实的接口地址
+                                        data: {
+                                            cart_list:[item.cart_id]
+                                        },
+                                        method:'POST',
+                                        header: {
+                                            'content-type': 'application/json' // 默认值
+                                        },
+                                        success: function(response) {
+                                            that.getCar(res.data);
+                                            that.$apply();
+                                            tip.loaded();
+                                        },
+                                        error:function (error) {
+                                            tip.loaded();
+                                        }
+                                    })
+                                }
+                            });
+                        } else if (res.cancel) {
+
+                        }
+                    },
+                    fail: res => {
+
+                    }
+                });
+            },
+            changeRadio(index){
+                let arr = [].concat(this.items);
+                arr[index].click = !arr[index].click;
+                this.items = [].concat(arr);
+                if(!arr[index].click){
+                    this.all_click = false;
+                }else{
+                    let length =0;
+                    for(let i=0;i<arr.length;i++){
+                        if(arr[i].click == arr[index].click){
+                            length = length +1
+                        }
+                    }
+                    if(length == arr.length){
+                        this.all_click = arr[index].click;
+                    }
+                }
+                let total = 0;
+                for(let i=0;i<arr.length;i++){
+                    if(arr[i].click){
+                        total = total + parseFloat(arr[i].medical_price)
+                    }
+                }
+                this.total_money = total;
+            },
+            //全选
+            allClick(){
+                this.all_click = !this.all_click;
+                let arr = [].concat(this.items);
+                for(let i=0;i<arr.length;i++){
+                    arr[i].click = this.all_click;
+                }
+                this.items = [].concat(arr);
+                if(this.all_click){
+                    for(let i=0;i<arr.length;i++){
+                        this.total_money = this.total_money + parseFloat(arr[i].medical_price)
+                    }
+                }else{
+                    this.total_money = 0;
+                }
+            },
+        //    结算
+            toPlay(){
+                let params = [];
+                let arr =[].concat(this.items)
+                for(let i=0;i<arr.length;i++){
+                    if(arr[i].click){
+                        delete arr[i].click;
+                        delete arr[i].isTouchMove;
+                        arr[i].order_want_time = ['',''];
+                        params.push(arr[i])
+                    }
+                }
+                if(params.length<1){
+                    tip.error('请先选择产品');
+                    return false;
+                }
+                wx.navigateTo({
+                    url: '/pages/index/playOrder?params='+ JSON.stringify( params )
+                });
+            }
+        }
+    }
+</script>
+<style scoped lang="less" rel="stylesheet/less">
+    .m-car-page{
+        padding-bottom: 120px;
+        .m-icon-radio{
+            display: inline-block;
+            width: 34rpx;
+            height: 34rpx;
+            margin-right: 20rpx;
+        }
+        .m-car-content{
+            .touch-item {
+                font-size: 14px;
+                display: flex;
+                justify-content: space-between;
+                /*border-bottom:1px solid #ccc;*/
+                width: 100%;
+                overflow: hidden
+            }
+            .content {
+                width: 100%;
+                padding: 10px;
+                line-height: 22px;
+                margin-right:0;
+                -webkit-transition: all 0.4s;
+                transition: all 0.4s;
+                -webkit-transform: translateX(90px);
+                transform: translateX(90px);
+                margin-left: -90px
+            }
+            .del {
+                background-color: #D8000D;
+                width: 90px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                -webkit-transform: translateX(90px);
+                transform: translateX(90px);
+                -webkit-transition: all 0.4s;
+                transition: all 0.4s;
+            }
+            .touch-move-active .content,
+            .touch-move-active .del {
+                -webkit-transform: translateX(0);
+                transform: translateX(0);
+            }
+            .m-one-car{
+                background-color: #fff;
+                /*padding: 25rpx 0 25rpx 0;*/
+                margin-bottom: 20rpx;
+                /*width: 100%;*/
+                /*overflow: hidden;*/
+                .m-product{
+                    width: 750rpx;
+                    padding-left: 40rpx;
+                    display: flex;
+                    flex-flow: row;
+                    align-items: center;
+                    justify-content: flex-start;
+                    .m-one-car-product{
+                        display: flex;
+                        flex-flow: row;
+                        align-items: flex-start;
+                        justify-content: space-between;
+                    }
+                    .m-product-img{
+                        width: 153rpx;
+                        height: 153rpx;
+                        border-radius: 10rpx;
+                        margin-right: 20rpx;
+                    }
+                    .m-price{
+                        color: #9A0000;
+                        font-size: 28rpx;
+                    }
+                    .m-product-text{
+                        font-size: 24rpx;
+                        color: #999999;
+                        .m-h{
+                            font-size: 28rpx;
+                            width: 355rpx;
+                            height: 82rpx;
+                            display: -webkit-box; //必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。
+                            text-overflow: ellipsis; //可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。
+                            overflow : hidden;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            color: #333333;
+                        }
+                    }
+                }
+                .m-btn{
+                    display: inline-block;
+                    width: 143rpx;
+                    height: 204rpx;
+                    background-color: #D8000D;
+                    color: #fff;
+                    font-size: 32rpx;
+                    text-align: center;
+                    line-height: 204rpx;
+                }
+            }
+        }
+        .m-car-footer{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding-left: 40rpx;
+            background-color: #fff;
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            justify-content: space-between;
+            color: #999999;
+            font-size: 24rpx;
+            .m-price{
+                font-size: 30rpx;
+                color: #9A0000;
+            }
+            .m-total{
+                display: flex;
+                flex-flow: row;
+                align-items: center;
+            }
+            .m-btn{
+                display: inline-block;
+                width: 220rpx;
+                height: 100rpx;
+                line-height: 100rpx;
+                text-align: center;
+                background-color: #D8000D;
+                color: #fff;
+                font-size: 32rpx;
+                margin-left: 30rpx;
+            }
+        }
+    }
+</style>

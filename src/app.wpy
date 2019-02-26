@@ -38,6 +38,7 @@ page{
           'pages/personal/login',
           'pages/personal/orderList',
           'pages/personal/orderDetail',
+          'pages/personal/car',
           'pages/personal/coupons',
           'pages/personal/report',
           'pages/physical/index',

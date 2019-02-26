@@ -14,8 +14,8 @@
                         <view class="m-one-content-h">
                             {{item.medical_name}}
                         </view>
-                        <view class="m-one-content-p">定点医院：{{item.order_location}} </view>
-                        <view class="m-one-content-p"> 直营门店：{{item.order_location_type}}</view>
+                        <view class="m-one-content-p">{{item.order_location_type}}：{{item.order_location}} </view>
+                        <!--<view class="m-one-content-p"> 直营门店：{{item.order_location_type}}</view>-->
                         <view class="m-red">￥{{item.medical_price}}</view>
                     </view>
                 </view>
@@ -75,7 +75,7 @@
         </view>
         <view class="m-order-footer">
             <view class="m-total">
-                <span>合计：<span class="m-price">￥1798.0</span></span>
+                <span>合计：<span class="m-price">￥{{total_money}}</span></span>
                 <span>支付方式：<span class="m-black">微信支付</span></span>
             </view>
             <view class="m-detail-btn" @tap="playOrder">确认支付</view>
@@ -98,7 +98,8 @@
             ordermain_message:'',
             cardpackage_id:'',
             can_use:[],
-            card_index:-1
+            card_index:-1,
+            total_money:0
         }
         getCard(token) {
             let that = this;
@@ -136,6 +137,7 @@
             for(let i=0;i<arr.length;i++){
                 arr[i].order_want_time[0] = myDate.getFullYear() + '-' + (myDate.getMonth() +1 <10?'0' +(myDate.getMonth() +1 ):(myDate.getMonth() +1) )+'-' +myDate.getDate()
                 arr[i].order_want_time[1] = '09:01'
+                this.total_money = this.total_money + parseFloat(arr[i].medical_price);
             }
             this.form = [].concat(arr);
             wx.getStorage({
