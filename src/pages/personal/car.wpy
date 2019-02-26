@@ -143,7 +143,6 @@
                     showCancel: true,
                     success: res => {
                         if (res.confirm) {
-
                             wx.getStorage({
                                 key: 'token',
                                 success: function(res){

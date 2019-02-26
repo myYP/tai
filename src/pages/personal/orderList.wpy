@@ -1,47 +1,28 @@
 <template>
     <view class="m-orderList">
         <view class="m-navList">
-            <view class="m-nav active">已寄出</view>
-            <view class="m-nav">已寄出</view>
-            <view class="m-nav">已寄出</view>
+            <view class="m-nav {{item.active? 'active':''}}" @tap="changeNav({{index}})"  wx:for="{{nav}}" wx:for-index="index" wx:key="index"  wx:for-item="item">{{item.name}}</view>
         </view>
         <view class="m-order-list">
-            <view class="m-one-order" @tap="changeRoute">
+            <view class="m-one-order" wx:for="{{order_list}}" wx:for-index="index" wx:key="index"  wx:for-item="item" @tap="changeRoute({{item}})">
                 <view class="m-one-order-top">
-                    <image src="../../images/swide.png"></image>
+                    <image src="{{item.medical_pic[0]}}"></image>
                     <view class="m-one-order-right">
                         <view class="m-one-order-h">
-                            <span>体检项目体检项目</span>
-                            <span class="m-red">已寄出</span>
+                            <span>{{item.medical_name}}</span>
+                            <span class="m-red">{{item.order_status}}</span>
                         </view>
                         <view class="m-one-order-p">
-                            <span>定点医院：某某医院</span>
-                            <span class="m-red">￥299</span>
+                            <span>{{item.order_location_type}}：{{item.order_location}}</span>
+                            <span class="m-red">￥{{item.order_price}}</span>
                         </view>
                     </view>
                 </view>
                 <view class="m-one-order-bottom">
                     <view></view>
-                    <view class="m-order-btn">确认收货</view>
-                </view>
-            </view>
-            <view class="m-one-order">
-                <view class="m-one-order-top">
-                    <image src="../../images/swide.png"></image>
-                    <view class="m-one-order-right">
-                        <view class="m-one-order-h">
-                            <span>体检项目体检项目</span>
-                            <span class="m-red">已寄出</span>
-                        </view>
-                        <view class="m-one-order-p">
-                            <span>定点医院：某某医院</span>
-                            <span class="m-red">￥299</span>
-                        </view>
-                    </view>
-                </view>
-                <view class="m-one-order-bottom">
-                    <view></view>
-                    <view class="m-order-btn">确认收货</view>
+                    <view class="m-order-btn" wx:if="{{item.order_status == '未支付'}}">立即支付</view>
+                    <view class="m-order-btn" wx:if="{{item.order_status == '已寄出'}}">确认收货</view>
+                    <view class="m-order-btn" wx:if="{{item.order_status == '分析毕'}}">报告查询</view>
                 </view>
             </view>
         </view>
@@ -49,17 +30,115 @@
 </template>
 <script>
     import wepy from 'wepy';
-
+    import tip from '../../utils/tip';
+    import api from '../../api/api';
     export default class orderList extends wepy.page {
         config = {
             navigationBarTitleText: '订单状态'
         }
-        data = {}
+        data = {
+            nav:[
+                {
+                    name:'待付款',
+                    active:true,
+                    value:'未支付'
+                },
+                {
+                    name:'已付款',
+                    active:false,
+                    value:'已寄出'
+                },
+                {
+                    name:'已寄出',
+                    active:false,
+                    value:'已寄出'
+                },
+                {
+                    name:'已收到',
+                    active:false,
+                    value:'已收到'
+                },
+                {
+                    name:'分析中',
+                    active:false,
+                    value:'分析中'
+                },
+                {
+                    name:'分析毕',
+                    active:false,
+                    value:'分析毕'
+                },
+                {
+                    name:'已完成',
+                    active:false,
+                    value:'已完成'
+                },
+                {
+                    name:'已取消',
+                    active:false,
+                    value:'已取消'
+                }
+            ],
+            order_list:[]
+        }
+        getOrder(token,status) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_my_order, //仅为示例，并非真实的接口地址
+                data: {
+                    token: token,
+                    order_status:status
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.order_list = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(){
+            var _this = this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    _this.getOrder(res.data,'未支付');
+                }
+            });
+        }
         methods = {
-            changeRoute(){
+            //到详情页
+            changeRoute(item){
                 wx.navigateTo({
-                    url: '/pages/personal/orderDetail'
+                    url: '/pages/personal/orderDetail?order_id=' + item.order_id
                 });
+            },
+            //导航点击
+            changeNav(index){
+                if(this.nav[index].active){
+                    return false;
+                }else{
+                    let arr = [].concat(this.nav);
+                    for(let i=0;i<arr.length;i++){
+                        arr[i].active = false;
+                    }
+                    arr[index].active = true;
+                    this.nav = [].concat(arr);
+                    let that = this;
+                    wx.getStorage({
+                        key: 'token',
+                        success: function(res){
+                            that.getOrder(res.data,arr[index].value);
+                        }
+                    });
+                    this.$apply();
+                }
             },
         }
     }

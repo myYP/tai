@@ -158,19 +158,19 @@
                     icon:'../../images/icon-send.png',
                     name:'已寄出',
                     url:'',
-                    num:2
+                    num:0
                 },
                 {
                     icon:'../../images/icon-receive.png',
                     name:'已收到',
                     url:'',
-                    num:0
+                    num:2
                 },
                 {
                     icon:'../../images/icon-analyze-doing.png',
                     name:'分析中',
                     url:'',
-                    num:2
+                    num:0
                 },
                 {
                     icon:'../../images/icon-analyze-deno.png',
@@ -208,12 +208,39 @@
                 }
             })
         }
+        getOrderInfo(token) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_order_count_user, //仅为示例，并非真实的接口地址
+                data: {
+                    token: token
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    let arr = [].concat(that.order_icon);
+                    for(let i=0;i<arr.length;i++){
+                        arr[i].num = res.data.data['type_'+i]
+                        console.log(res.data.data['type_'+i],i)
+                    }
+                    that.order_icon = [].concat(arr);
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
         onLoad(){
             var _this = this;
             wx.getStorage({
                 key: 'token',
                 success: function(res){
                     _this.getuserInfo(res.data);
+                    _this.getOrderInfo(res.data);
                 }
             });
         }

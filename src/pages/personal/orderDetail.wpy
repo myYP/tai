@@ -1,38 +1,41 @@
 <template>
     <view class="m-orderDetail">
         <view class="m-order-info">
-            血样已寄出
+            {{detail_info.order_status}}
         </view>
         <view class="m-order-personal">
-            <span>体检用户：某某某</span>
-            <span>15700000000</span>
+            <span>体检用户：{{detail_info.order_user_name}}</span>
+            <span>{{detail_info.order_user_telphone}}</span>
         </view>
         <view class="m-one-order">
             <view class="m-one-order-top">
-                <image src="../../images/swide.png"></image>
+                <image src="{{detail_info.medical_pic}}"></image>
                 <view class="m-one-order-right">
                     <view class="m-one-order-h">
-                        <span>体检项目体检项目</span>
+                        <span>{{detail_info.medical_name}}</span>
                         <!--<span class="m-red">已寄出</span>-->
                     </view>
                     <view class="m-one-order-p">
-                        <span>定点医院：某某医院</span>
-                        <span class="m-red">￥299</span>
+                        <span>{{detail_info.order_location_type}}：{{detail_info.order_location}}</span>
+                        <span class="m-red">￥{{detail_info.order_price}}</span>
                     </view>
                 </view>
             </view>
             <view class="m-one-order-bottom">
                 <view></view>
-                <view class="m-order-btn">退款</view>
+                <view class="m-order-btn active" wx:if="{{detail_info.order_status == '未支付'}}" >立即支付</view>
+                <view class="m-order-btn" wx:if="{{detail_info.order_status == '未支付'}}" @tap="changeOrder('取消订单',5)">取消</view>
+                <view class="m-order-btn" wx:if="{{detail_info.order_status == '已寄出'}}" @tap="changeOrder('确认收到',2)">确认收货</view>
+                <view class="m-order-btn" wx:if="{{detail_info.order_status == '分析毕'}}" >报告查询</view>
             </view>
         </view>
 
         <view class="m-order-detail-info">
             <view class="m-raw m-title"> 订单信息</view>
-            <view class="m-raw">订单编号：123456789000</view>
-            <view class="m-raw">创建时间：2018-11-05 11:26:00</view>
-            <view class="m-raw">付款时间：2018-11-05 11:27:30</view>
-            <view class="m-raw">发货时间：2018-11-05 11:55:09</view>
+            <view class="m-raw">订单编号：{{detail_info.order_no}}</view>
+            <view class="m-raw">创建时间：{{detail_info.createtime}}</view>
+            <view class="m-raw">付款时间：{{detail_info.order_pay_time ==null?'':detail_info.order_pay_time}}</view>
+            <view class="m-raw">发货时间：{{detail_info.order_send_time ==null?'':detail_info.order_send_time}}</view>
         </view>
 
         <view class="m-bottom-btn">联系客服 </view>
@@ -40,13 +43,79 @@
 </template>
 <script>
     import wepy from 'wepy';
-
+    import tip from '../../utils/tip';
+    import api from '../../api/api';
     export default class orderDetail extends wepy.page {
         config = {
             navigationBarTitleText: '订单详情'
         }
-        data = {}
-        methods = {}
+        data = {
+            detail_info:{},
+            order_id:''
+        }
+        getDetail(id) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_order_message, //仅为示例，并非真实的接口地址
+                data: {
+                    order_id:id
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.detail_info = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+            this.getDetail(options.order_id);
+            this.order_id = options.order_id
+        }
+        methods = {
+            //更新订单
+            changeOrder(status,type){
+                let that = this;
+                wx.showModal({
+                    title: '提示',
+                    content: '确认' + status,
+                    showCancel: true,
+                    success: res => {
+                        if (res.confirm) {
+                            tip.loading();
+                            wx.request({
+                                url: api.update_order + '?order_id=' +that.order_id + '&update_type=' +type, //仅为示例，并非真实的接口地址
+                                data: {},
+                                method:'POST',
+                                header: {
+                                    'content-type': 'application/json' // 默认值
+                                },
+                                success: function(res) {
+                                    that.getDetail(that.order_id);
+                                    that.$apply();
+                                    tip.loaded();
+                                },
+                                error:function (error) {
+                                    tip.loaded();
+                                }
+                            })
+                        } else if (res.cancel) {
+
+                        }
+                    },
+                    fail: res => {
+
+                    }
+                });
+
+            }
+        }
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
@@ -113,7 +182,7 @@
                 height: 96rpx;
                 /*width: 100%;*/
                 padding: 0 34rpx;
-                .flex-row(space-between);
+                .flex-row(flex-end);
                 .m-order-btn{
                     width: 130rpx;
                     padding: 5rpx 0;
@@ -122,6 +191,12 @@
                     border: 1rpx solid #999999;
                     color: #999999;
                     border-radius: 30rpx;
+                    margin-left: 20rpx;
+                    &.active{
+                        background-color: #D8000D;
+                        border: 1rpx solid #D8000D;
+                        color: #fff;
+                    }
                 }
             }
         }
