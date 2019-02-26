@@ -21,7 +21,7 @@
                 <view class="m-one-order-bottom">
                     <view></view>
                     <view class="m-order-btn" wx:if="{{item.order_status == '未支付'}}">立即支付</view>
-                    <view class="m-order-btn" wx:if="{{item.order_status == '已寄出'}}">确认收货</view>
+                    <view class="m-order-btn" wx:if="{{item.order_status == '已寄出'}}" @tap="changeOrder('确认收货',2)">确认收货</view>
                     <view class="m-order-btn" wx:if="{{item.order_status == '分析毕'}}">报告查询</view>
                 </view>
             </view>
@@ -140,6 +140,42 @@
                     this.$apply();
                 }
             },
+            //更新订单
+            changeOrder(status,type){
+                let that = this;
+                wx.showModal({
+                    title: '提示',
+                    content: '确认' + status,
+                    showCancel: true,
+                    success: res => {
+                        if (res.confirm) {
+                            tip.loading();
+                            wx.request({
+                                url: api.update_order + '?order_id=' +that.order_id + '&update_type=' +type, //仅为示例，并非真实的接口地址
+                                data: {},
+                                method:'POST',
+                                header: {
+                                    'content-type': 'application/json' // 默认值
+                                },
+                                success: function(res) {
+                                    that.getDetail(that.order_id);
+                                    that.$apply();
+                                    tip.loaded();
+                                },
+                                error:function (error) {
+                                    tip.loaded();
+                                }
+                            })
+                        } else if (res.cancel) {
+
+                        }
+                    },
+                    fail: res => {
+
+                    }
+                });
+
+            }
         }
     }
 </script>
