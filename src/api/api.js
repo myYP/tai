@@ -33,11 +33,15 @@ const update_order = api2 +'order/update_order';//更新订单
 const get_question_list = api2 +'question/get_question_list';//获取问卷列表
 const new_answer = api2 +'question/new_answer';//获取问卷列表
 const get_card_message = api2 + 'card/get_card_message';//获取优惠券详情
+
+const user_login = api2 +'user/user_login';//登录
+const get_wechat_code = api2+'user/get_wechat_code';//获取openid
+const get_inforcode = api2 +'config/get_inforcode';//获取短信验证码
 //评价
 module.exports = {
   login,get_medical_list,get_medical_message,get_science_list,get_science_message,get_medical_user,
     get_my_medical_user,add_my_medical_user,get_loadpic_list,get_user_info,get_my_package,add_to_my_package,
     get_location,make_order,make_cart,get_cart,delete_cart,get_order_count_user,get_my_order,get_order_message,
-    update_order,get_question_list,new_answer,get_card_message
+    update_order,get_question_list,new_answer,get_card_message,user_login,get_wechat_code,get_inforcode
 
 }
