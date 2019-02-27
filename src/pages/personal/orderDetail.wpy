@@ -26,7 +26,7 @@
                 <view class="m-order-btn active" wx:if="{{detail_info.order_status == '未支付'}}" >立即支付</view>
                 <view class="m-order-btn" wx:if="{{detail_info.order_status == '未支付'}}" @tap="changeOrder('取消订单',5)">取消</view>
                 <view class="m-order-btn" wx:if="{{detail_info.order_status == '已寄出'}}" @tap="changeOrder('确认收到',2)">确认收货</view>
-                <view class="m-order-btn" wx:if="{{detail_info.order_status == '分析毕'}}" >报告查询</view>
+                <view class="m-order-btn" wx:if="{{detail_info.order_status == '分析毕'}}" @tap="lookReport">报告查询</view>
             </view>
         </view>
 
@@ -156,6 +156,12 @@
             },
             telPhone(){
                 this.show_tel = true;
+            },
+            lookReport(){
+                let that = this;
+                wx.navigateTo({
+                    url: '/pages/index/physicalList?order_pdf='+that.detail_info.order_pdf
+                });
             }
         }
     }

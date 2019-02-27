@@ -172,11 +172,14 @@
                         wx.authorize({
                             scope: 'scope.userInfo',
                             success:function (res_info){
-                                console.log(res_info)
                                 wx.login({
                                     success:function(resLogin){
                                         var code = resLogin.code;
                                         that.getInfo(code);
+                                        wx.setStorage({
+                                            'key': 'code',
+                                            'data': code
+                                        });
                                     }
                                 });
                             },fail:function (res_info) {
@@ -184,11 +187,14 @@
                             }
                         })
                     }else{
-                        console.log(res,'2')
                         wx.login({
                             success:function(resLogin){
                                 var code = resLogin.code;
                                 that.getInfo(code);
+                                wx.setStorage({
+                                    'key': 'code',
+                                    'data': code
+                                });
                             }
                         });
                     }

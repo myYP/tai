@@ -7,7 +7,7 @@
                 duration="{{duration}}"
                 style="height: 750rpx;"
         >
-            <block wx:for="{{imgUrls}}" wx:key="item">
+            <block wx:for="{{detail_data.medical_pic}}" wx:key="item">
                 <swiper-item>
                     <image src="{{item}}" class="slide-image" style="width: 750rpx;height: 750rpx;" />
                 </swiper-item>
@@ -36,7 +36,9 @@
             </view>
         </view>
 
-        <image src="../../images/swide.png" class="m-detail-img"></image>
+        <view>
+            <image src="{{item}}" class="m-detail-img" wx:for="{{detail_data.medical_message}}" wx:for-index="index" wx:key="index"  wx:for-item="item"></image>
+        </view>
 
         <view class="m-modal" wx:if="{{show_modal}}" bindtouchstart='touchStart' bindtouchend="touchEnd">
             <view class="m-modal-state">
@@ -372,7 +374,6 @@
         }
         .m-detail-img{
             width: 100%;
-            min-height: 750rpx;
         }
         .m-detail-btn{
             position: fixed;

@@ -78,7 +78,10 @@
                 <span>合计：<span class="m-price">￥{{total_money}}</span></span>
                 <span>支付方式：<span class="m-black">微信支付</span></span>
             </view>
-            <view class="m-detail-btn" @tap="playOrder">确认支付</view>
+            <button open-type="getUserInfo" class="m-weixin" bindgetuserinfo="onGotUserInfo">
+                <view class="m-detail-btn" @tap="playOrder">确认支付</view>
+            </button>
+
         </view>
 
     </view>
@@ -129,6 +132,64 @@
                 }
             })
         }
+        postOrder(token,params,code){
+            let that = this;
+            wx.request({
+                url: api.make_order + '?token='+token,
+                data:params,
+                method:'POST',
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(responsse) {
+                    that.postPay(responsse.data.data.ordermain_id,code)
+                    // that.$apply();
+                    // tip.success(responsse.data.message);
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        postPay(id,code){
+            let that = this;
+            wx.request({
+                url: api.get_pay_config,
+                data:{
+                    ordermain_id:id,
+                    code:code
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(responsse) {
+                    that.$apply();
+                    tip.success(responsse.data.message);
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        playOrder(code){
+            let that = this;
+            let arr = [].concat(this.form);
+            for(let i=0;i<arr.length;i++){
+                arr[i].order_want_time = arr[i].order_want_time.join(' ');
+            }
+            this.form = [].concat(arr);
+            let params =  {
+                order_list:that.form,
+                ordermain_message:that.ordermain_message,
+                cardpackage_id:that.cardpackage_id
+            }
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    that.postOrder(res.data,params,code)
+                }
+            });
+        }
         onLoad(options){
             let that = this;
             let arr = [].concat(this.form);
@@ -147,8 +208,50 @@
                 }
             });
         }
+
         methods = {
-            bindPickerChange(){
+            onGotUserInfo: function (e) {
+                var that = this;
+                wx.getSetting({
+                    success:function(res) {
+                        if (!res.authSetting['scope.userInfo']) {
+                            wx.authorize({
+                                scope: 'scope.userInfo',
+                                success:function (res_info){
+                                    wx.login({
+                                        success:function(resLogin){
+                                            var code = resLogin.code;
+                                            that.playOrder(code);
+                                            wx.setStorage({
+                                                'key': 'code',
+                                                'data': code
+                                            });
+                                        }
+                                    });
+                                },fail:function (res_info) {
+                                    console.log(res_info)
+                                }
+                            })
+                        }else{
+                            wx.login({
+                                success:function(resLogin){
+                                    var code = resLogin.code;
+                                    // that.getInfo(code);
+                                    that.playOrder(code);
+                                    wx.setStorage({
+                                        'key': 'code',
+                                        'data': code
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    fail:function (res) {
+                        console.log(res)
+                    }
+                });
+            },
+            bindPickerChange(e){
                 this.card_index = e.detail.value;
             },
             bindTextAreaBlur(e){
@@ -166,38 +269,7 @@
                 arr[index].order_want_time[0] = e.detail.value;
                 this.form = [].concat(arr);
             },
-            playOrder(){
-                let that = this;
-                let arr = [].concat(this.form);
-                for(let i=0;i<arr.length;i++){
-                  arr[i].order_want_time = arr[i].order_want_time.join(' ');
-                }
-                this.form = [].concat(arr);
-                wx.getStorage({
-                    key: 'token',
-                    success: function(res){
-                        wx.request({
-                            url: api.make_order + '?token='+res.data,
-                            data: {
-                                order_list:that.form,
-                                ordermain_message:that.ordermain_message,
-                                cardpackage_id:that.cardpackage_id
-                            },
-                            method:'POST',
-                            header: {
-                                'content-type': 'application/json' // 默认值
-                            },
-                            success: function(responsse) {
-                                that.$apply();
-                                tip.success(responsse.data.message);
-                            },
-                            error:function (error) {
-                                tip.loaded();
-                            }
-                        })
-                    }
-                });
-            }
+
         }
     }
 </script>
@@ -316,13 +388,25 @@
                     color: #333333;
                 }
             }
-            .m-detail-btn{
-                height: 100rpx;
-                line-height: 100rpx;
-                text-align: center;
-                background-color: @common-color;
-                color: #fff;
+            .m-weixin{
+                width: 100%;
+                background: none;
+                border: 1px solid transparent;
+                padding: 0;
+                border-radius: 0;
+                .m-detail-btn{
+                    height: 100rpx;
+                    line-height: 100rpx;
+                    text-align: center;
+                    background-color: @common-color;
+                    color: #fff;
+                }
+
             }
+            button::after {
+                border: none
+            }
+
         }
     }
 </style>
