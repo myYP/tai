@@ -1,7 +1,7 @@
 <template>
     <view class="m-physicalList">
         <view class="m-top">
-            <view class="m-search-box" >
+            <view class="m-search-box" @tap="showSearch">
                 <image class="m-icon-search" style="width: 30rpx;height:30rpx;margin: 0 20rpx;" src="../../images/icon-search.png" />
                 <p>搜索项目</p>
             </view>
@@ -17,6 +17,21 @@
                         <view class="m-one-content-p">适用人群：{{item.medical_for}}</view>
                         <view class="m-price">¥{{item.medical_price}}</view>
                     </view>
+                </view>
+            </view>
+        </view>
+        <view class="m-modal" wx:if="{{show_search}}">
+            <view class="m-modal-state">
+                <view class="m-search-box">
+                    <view class="m-search">
+                        <image src="../../images/icon-search.png"/>
+                        <input type="text" placeholder="" auto-focus="true" value="{{search_value}}" bindinput="searchBlur" bindconfirm="confirm">
+                        <image src="../../images/icon-close.png" @tap="closeText"/>
+                    </view>
+                    <view @tap="cancelSearch">取消</view>
+                </view>
+                <view class="m-title-list">
+                    <view class="m-row" wx:for="{{title_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item" @tap="titleTap({{item}})">{{item.medical_name}}</view>
                 </view>
             </view>
         </view>
@@ -39,10 +54,37 @@
                 total_pages:0
             },
             medical_data:[],
-            examiner_id:''
+            examiner_id:'',
+            show_search:false,
+            search_value:'',
+            title_data:[]
         }
         components = {
 
+        }
+        getMedicalName(name) {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_medical_list,
+                data: {
+                    use_type: 0,
+                    page_num: 1,
+                    page_size:5,
+                    medical_name:name
+                },
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.title_data = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
         }
         getCardList(id) {
             let that = this;
@@ -85,7 +127,7 @@
                 }
             })
         }
-        getMedicalList() {
+        getMedicalList(name) {
           let that = this;
              tip.loading();
                 wx.request({
@@ -94,7 +136,7 @@
                         use_type: 0,
                         page_num:Number(that.page_info.cur_page),
                         page_size:that.page_info.page_size,
-                        medical_name:''
+                        medical_name:name != undefined?name:''
                     },
                     header: {
                         'content-type': 'application/json' // 默认值
@@ -104,7 +146,7 @@
                             tip.loaded();
                             return false;
                         }
-                        if(that.page_info.cur_page == 0){
+                        if(that.page_info.cur_page == 1){
                             that.medical_data = res.data.data;
                         }else{
                             that.medical_data = that.medical_data.concat(res.data.data);
@@ -122,6 +164,8 @@
         onLoad(options){
             if(options.card_id){
                 this.getCardList(options.card_id);
+            }else if(options.medical_name){
+                this.getMedicalList(options.medical_name);
             }else{
                 this.getMedicalList();
             }
@@ -150,6 +194,32 @@
                 wx.navigateTo({
                     url: '/pages/index/detail?medical_id=' + item.medical_id + '&examiner_id=' +that.examiner_id
                 });
+
+            },
+            confirm(e){
+                this.search_value ='';
+                this.show_search = false;
+                this.page_info.cur_page = 1;
+                this.getMedicalList(e.detail.value);
+            },
+            titleTap(item){
+                this.search_value ='';
+                this.show_search = false;
+                this.page_info.cur_page = 1;
+                this.getMedicalList(item.medical_name);
+            },
+            showSearch(){
+                this.show_search = true;
+            },
+            searchBlur(e){
+                this.getMedicalName(e.detail.value)
+            },
+            closeText(){
+                this.search_value = ''
+            },
+            cancelSearch(){
+                this.search_value = '';
+                this.show_search = false;
             }
         }
     }
@@ -215,6 +285,56 @@
                     width: 425rpx;
                     text-align: right;
                     color: @common-color;
+                }
+            }
+        }
+        .m-modal{
+            position: fixed;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            width: 100%;
+            height:100%;
+            background-color: rgba(0,0,0,0.2);
+            z-index: 1001;
+            .m-modal-state{
+                background-color: #FAFAFA;
+                padding: 27rpx;
+                image{
+                    display: inline-block;
+                    width: 33rpx;
+                    height: 33rpx;
+                }
+                .m-search-box{
+                    display: flex;
+                    flex-flow: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 21rpx;
+                    .m-search{
+                        display: flex;
+                        flex-flow: row;
+                        align-items: center;
+                        justify-content: space-between;
+                        background-color: #FFFFFF;
+                        border-radius: 50rpx;
+                        height: 50rpx;
+                        width: 580rpx;
+                        padding: 0 30rpx;
+                        input{
+                            display: block;
+                            width: 480rpx;
+                        }
+                    }
+                }
+                .m-title-list{
+                    margin-top: 20rpx;
+                    .m-row{
+                        padding: 8rpx;
+                        font-size: 24rpx;
+                        border-bottom: 1rpx solid #D9D9D9;
+                    }
                 }
             }
         }

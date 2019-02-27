@@ -179,13 +179,63 @@
         }
       }
     }
+    .m-modal{
+      position: fixed;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      width: 100%;
+      height:100%;
+      background-color: rgba(0,0,0,0.2);
+      z-index: 1001;
+      .m-modal-state{
+        background-color: #FAFAFA;
+        padding: 27rpx;
+        image{
+          display: inline-block;
+          width: 33rpx;
+          height: 33rpx;
+        }
+        .m-search-box{
+          display: flex;
+          flex-flow: row;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 21rpx;
+          .m-search{
+            display: flex;
+            flex-flow: row;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #FFFFFF;
+            border-radius: 50rpx;
+            height: 50rpx;
+            width: 580rpx;
+            padding: 0 30rpx;
+            input{
+              display: block;
+              width: 480rpx;
+            }
+          }
+        }
+        .m-title-list{
+          margin-top: 20rpx;
+          .m-row{
+            padding: 8rpx;
+            font-size: 24rpx;
+            border-bottom: 1rpx solid #D9D9D9;
+          }
+        }
+      }
+    }
   }
 
 </style>
 <template>
   <view class="m-index">
     <view class="m-top">
-      <view class="m-search-box" >
+      <view class="m-search-box" @tap="showSearch">
         <image class="m-icon-search" style="width: 30rpx;height:30rpx;margin: 0 20rpx;" src="../../images/icon-search.png" />
        <p>搜索项目</p>
       </view>
@@ -269,6 +319,21 @@
         <view class="m-btn" @tap="cancelTel">取消</view>
       </view>
     </view>
+    <view class="m-modal" wx:if="{{show_search}}">
+      <view class="m-modal-state">
+        <view class="m-search-box">
+          <view class="m-search">
+            <image src="../../images/icon-search.png"/>
+            <input type="text" placeholder="" auto-focus="true" value="{{search_value}}" bindinput="searchBlur" bindconfirm="confirm">
+            <image src="../../images/icon-close.png" @tap="closeText"/>
+          </view>
+          <view @tap="cancelSearch">取消</view>
+        </view>
+        <view class="m-title-list">
+          <view class="m-row" wx:for="{{title_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item" @tap="titleTap({{item}})">{{item.medical_name}}</view>
+        </view>
+      </view>
+    </view>
   </view>
 </template>
 
@@ -303,7 +368,10 @@
         scrollTop: 100,
         page_info:{cur_page:0, page_size: 3, total_items: 2, total_pages: 1},
         show_tel:false,
-        tel_data:[]
+        tel_data:[],
+        show_search:false,
+        title_data:[],
+        search_value:''
     }
       getScroll() {
           let that = this;
@@ -341,6 +409,30 @@
               },
               success: function(res) {
                   that.medical_data = res.data.data;
+                  that.$apply();
+                  tip.loaded();
+              },
+              error:function (error) {
+                  tip.loaded();
+              }
+          })
+      }
+      getMedicalName(name) {
+          let that = this;
+          tip.loading();
+          wx.request({
+              url: api.get_medical_list,
+              data: {
+                  use_type: 0,
+                  page_num: 1,
+                  page_size:5,
+                  medical_name:name
+              },
+              header: {
+                  'content-type': 'application/json' // 默认值
+              },
+              success: function(res) {
+                  that.title_data = res.data.data;
                   that.$apply();
                   tip.loaded();
               },
@@ -469,6 +561,29 @@
         scroll(e) {
             console.log(e)
         },
+        showSearch(){
+            this.show_search = true;
+        },
+        searchBlur(e){
+            this.getMedicalName(e.detail.value)
+        },
+        confirm(e){
+            wx.navigateTo({
+                url: '/pages/index/physicalList?medical_name='+e.detail.value
+            });
+        },
+        titleTap(item){
+            wx.navigateTo({
+                url: '/pages/index/physicalList?medical_name='+ item.medical_name
+            });
+        },
+        closeText(){
+            this.search_value = ''
+        },
+        cancelSearch(){
+            this.search_value = '';
+            this.show_search = false;
+        }
     }
   }
 </script>
