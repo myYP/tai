@@ -1,104 +1,141 @@
 <template>
     <view class="m-questionnaire">
-        <view class="m-one-questionnaire">
+        <view class="m-one-questionnaire" wx:for="{{list_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
             <view class="m-wen">
                 <image src="../../images/icon-wen.png"></image>
-                <span>1.问题问题问题？</span>
+                <span>{{index +1}}.{{item.question_title}}</span>
             </view>
             <view class="m-da">
                 <image src="../../images/icon-da.png"></image>
                 <view class="m-da-info">
-                    <radio-group class="radio-group" bindchange="radioChange">
-                        <label class="radio" wx:for="{{items}}">
-                            <radio value="{{item.name}}" color="#D8000D" class="m-radio" checked="{{item.checked}}" />
-                            {{item.value}}
+                    <radio-group wx:if="{{item.question_type == '单选'}}" id="{{index}}"  class="radio-group" bindchange="radioChange">
+                        <label class="radio" wx:for="{{item.question_choose}}"  wx:for-index="i" wx:key="i"  wx:for-item="key">
+                            <radio value="{{key}}" color="#D8000D"  class="m-radio"   />
+                            {{key}}
                         </label>
                     </radio-group>
-                </view>
-            </view>
-        </view>
-        <view class="m-one-questionnaire">
-            <view class="m-wen">
-                <image src="../../images/icon-wen.png"></image>
-                <span>1.问题问题问题？</span>
-            </view>
-            <view class="m-da">
-                <image src="../../images/icon-da.png"></image>
-                <view class="m-da-info">
-                    <radio-group class="radio-group" bindchange="radioChange">
-                        <label class="radio" wx:for="{{items}}">
-                            <radio value="{{item.name}}" color="#D8000D" class="m-radio" checked="{{item.checked}}" />
-                            {{item.value}}
+                    <checkbox-group wx:if="{{item.question_type == '多选'}}"  id="{{index}}" class="radio-group" bindchange="checkboxChange">
+                        <label class="checkbox" wx:for="{{item.question_choose}}" wx:for-index="i" wx:key="i"  wx:for-item="key">
+                            <checkbox value="{{key}}" color="#D8000D"   />
+                            {{key}}
                         </label>
-                    </radio-group>
+                    </checkbox-group>
+                    <textarea wx:if="{{item.question_type == '问答'}}" id="{{index}}" bindblur="bindTextAreaBlur" style="border: 1rpx solid #D8000D;border-radius: 10rpx;margin-bottom: 20rpx;"   />
                 </view>
             </view>
         </view>
-        <view class="m-one-questionnaire">
-            <view class="m-wen">
-                <image src="../../images/icon-wen.png"></image>
-                <span>1.问题问题问题？</span>
-            </view>
-            <view class="m-da">
-                <image src="../../images/icon-da.png"></image>
-                <view class="m-da-info">
-                    <radio-group class="radio-group" bindchange="radioChange">
-                        <label class="radio" wx:for="{{items}}">
-                            <radio value="{{item.name}}" color="#D8000D" class="m-radio" checked="{{item.checked}}" />
-                            {{item.value}}
-                        </label>
-                    </radio-group>
-                </view>
-            </view>
-        </view>
-        <view class="m-one-questionnaire">
-            <view class="m-wen">
-                <image src="../../images/icon-wen.png"></image>
-                <span>1.问题问题问题？</span>
-            </view>
-            <view class="m-da">
-                <image src="../../images/icon-da.png"></image>
-                <view class="m-da-info">
-                    <textarea bindblur="bindTextAreaBlur" style="border: 1rpx solid #D8000D;border-radius: 10rpx;margin-bottom: 20rpx;"   />
-                </view>
-            </view>
-        </view>
-        <view class="m-detail-btn" >提交</view>
 
-        <view class="m-modal">
+        <view class="m-detail-btn" @tap="submitTap">提交</view>
+
+        <view class="m-modal" wx:if="{{show_modal}}">
             <view class="m-modal-state">
-                <image src="../../images/icon-more.png"></image>
+                <image src="../../images/icon-success.png"></image>
                 <view class="m-success-text">提交成功</view>
-                <view class="m-btn active">预约体检</view>
-                <view class="m-btn">继续添加体检用户</view>
+                <view class="m-btn active" @tap="toProduct">预约体检</view>
+                <view class="m-btn" @tap="goReturn">继续添加体检用户</view>
             </view>
         </view>
     </view>
 </template>
 <script>
     import wepy from 'wepy';
-
+    import api from '../../api/api';
+    import tip from '../../utils/tip';
     export default class questionnaire extends wepy.page {
         config = {
             navigationBarTitleText: '问卷调查'
         }
         data = {
-            items: [
-                {name: 'USA', value: '美国'},
-                {name: 'CHN', value: '中国', checked: 'true'},
-                {name: 'BRA', value: '巴西'},
-                {name: 'JPN', value: '日本'},
-                {name: 'ENG', value: '英国'},
-                {name: 'TUR', value: '法国'},
-            ]
+            examiner_id:'',
+            examiner_name:'',
+            list_data:[],
+            show_modal:false
+        }
+        getList() {
+            let that = this;
+            tip.loading();
+            wx.request({
+                url: api.get_question_list,
+                data: {},
+                header: {
+                    'content-type': 'application/json' // 默认值
+                },
+                success: function(res) {
+                    that.list_data = res.data.data;
+                    that.$apply();
+                    tip.loaded();
+                },
+                error:function (error) {
+                    tip.loaded();
+                }
+            })
+        }
+        onLoad(options){
+            this.getList();
+            this.examiner_name=options.examiner_name;
+            this.examiner_id = options.examiner_id;
         }
         methods = {
             radioChange(e) {
-                console.log('radio发生change事件，携带value值为：', e.detail.value)
+                let index = Number(e.currentTarget.id);
+                let arr = [].concat(this.list_data);
+                let a = [];
+                a.push(e.detail.value);
+                arr[index].answer_choose = [].concat(a);
+                this.list_data = [].concat(arr);
             },
             bindTextAreaBlur(e) {
-                console.log(e.detail.value)
+                let index = Number(e.currentTarget.id);
+                let arr = [].concat(this.list_data);
+                arr[index].answer_choose = e.detail.value;
+                this.list_data = [].concat(arr);
             },
+            checkboxChange(e) {
+                let index = Number(e.currentTarget.id);
+                let arr = [].concat(this.list_data);
+                arr[index].answer_choose = e.detail.value;
+                this.list_data = [].concat(arr);
+            },
+            submitTap(){
+                for(let i=0;i<this.list_data.length;i++){
+                    if(!this.list_data[i].answer_choose){
+                        tip.error('请完成问卷所有问题');
+                        return false;
+                    }
+                }
+                let that = this;
+                tip.loading();
+                wx.request({
+                    url: api.new_answer,
+                    data: {
+                        answer_list:that.list_data,
+                        examiner_name:that.examiner_name,
+                        examiner_id:that.examiner_id
+                    },
+                    method:'POST',
+                    header: {
+                        'content-type': 'application/json' // 默认值
+                    },
+                    success: function(res) {
+                        that.show_modal = true;
+                        that.$apply();
+                        tip.loaded();
+                    },
+                    error:function (error) {
+                        tip.loaded();
+                    }
+                })
+            },
+            toProduct(){
+                wx.navigateTo({
+                    url: '/pages/index/physicalList?examiner_id='+this.examiner_id +'&examiner_name='+this.examiner_name
+                });
+            },
+            goReturn(){
+                wx.switchTab({
+                    url: '/pages/physical/index'
+                });
+            }
         }
     }
 </script>
@@ -139,7 +176,9 @@
                     flex-wrap: wrap;
                     .radio{
                         margin-bottom: 20rpx;
-
+                    }
+                    .checkbox{
+                        margin-bottom: 20rpx;
                     }
                 }
             }

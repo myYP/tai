@@ -30,11 +30,13 @@ const get_order_count_user = api2 +'order/get_order_count_user';//订单数量
 const get_my_order = api2 +'order/get_my_order';//获取我的订单
 const get_order_message = api2 +'order/get_order_message';//获取订单详情
 const update_order = api2 +'order/update_order';//更新订单
+const get_question_list = api2 +'question/get_question_list';//获取问卷列表
+const new_answer = api2 +'question/new_answer';//获取问卷列表
 //评价
 module.exports = {
   login,get_medical_list,get_medical_message,get_science_list,get_science_message,get_medical_user,
     get_my_medical_user,add_my_medical_user,get_loadpic_list,get_user_info,get_my_package,add_to_my_package,
     get_location,make_order,make_cart,get_cart,delete_cart,get_order_count_user,get_my_order,get_order_message,
-    update_order
+    update_order,get_question_list,new_answer
 
 }

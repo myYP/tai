@@ -38,7 +38,8 @@
                 page_size:5,
                 total_pages:0
             },
-            medical_data:[]
+            medical_data:[],
+            examiner_id:''
         }
         components = {
 
@@ -79,7 +80,9 @@
         }
         onLoad(options){
            this.getMedicalList();
-
+           if(options.examiner_id){
+               this.examiner_id = options.examiner_id
+           }
         }
         onPullDownRefresh(){
             wx.stopPullDownRefresh();
@@ -98,8 +101,9 @@
         }
         methods = {
             goDetail(item){
+                let that = this;
                 wx.navigateTo({
-                    url: '/pages/index/detail?medical_id=' + item.medical_id
+                    url: '/pages/index/detail?medical_id=' + item.medical_id + '&examiner_id=' +that.examiner_id
                 });
             }
         }

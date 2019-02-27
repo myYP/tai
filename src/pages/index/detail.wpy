@@ -55,7 +55,17 @@
                 >
                      <view class="m-sku-h">体检方式</view>
                     <view>
-                        <picker bindchange="bindLoc1Change" value="{{loc1}}" range="{{loc_data1}}" range-key="location_name">
+                        <picker bindchange="bindTypeChange" value="{{type}}" range="{{type_list}}" range-key="name">
+                            <!--<view class="picker">-->
+                            <!--当前选择：{{array[index]}}-->
+                            <!--</view>-->
+                            <view class="m-sku">
+                                <span>{{type_list[type].name}}</span>
+                                <image src="../../images/icon-select.png" class="m-icon-select"></image>
+                            </view>
+                        </picker>
+
+                        <picker bindchange="bindLoc1Change" wx:if="{{type == 0}}" value="{{loc1}}" range="{{loc_data1}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
@@ -64,8 +74,7 @@
                                 <image src="../../images/icon-select.png" class="m-icon-select"></image>
                             </view>
                         </picker>
-
-                        <picker bindchange="bindLoc2Change" value="{{loc2}}" range="{{loc_data2}}" range-key="location_name">
+                        <picker bindchange="bindLoc2Change" wx:if="{{type == 1}}" value="{{loc2}}" range="{{loc_data2}}" range-key="location_name">
                             <!--<view class="picker">-->
                             <!--当前选择：{{array[index]}}-->
                             <!--</view>-->
@@ -126,7 +135,18 @@
             loc2:0,
             user_list:[],
             user:0,
-            touch_y:0
+            touch_y:0,
+            type_list:[
+                {
+                    name:'定点医院',
+                    value:1
+                },
+                {
+                    name:'直营门店',
+                    value:2
+                }
+            ],
+            type:0
         }
         getDetail(id) {
             let that = this;
@@ -176,7 +196,7 @@
                 }
             })
         }
-        getUserList(token) {
+        getUserList(token,examiner_id) {
             let that = this;
             tip.loading();
             wx.request({
@@ -189,6 +209,11 @@
                 },
                 success: function(res) {
                     that.user_list = res.data.data;
+                    for(let i=0;i<that.user_list.length;i++){
+                        if(that.user_list[i].examiner_id ==  examiner_id){
+                            that.user = i;
+                        }
+                    }
                     that.$apply();
                     tip.loaded();
                 },
@@ -207,7 +232,7 @@
                 key: 'token',
                 success: function(res){
                     // _this.getWorkList(res.data,_this.select_city.areano);
-                    that.getUserList(res.data);
+                    that.getUserList(res.data,options.examiner_id);
                 }
             });
         }
@@ -254,6 +279,9 @@
             bindUserChange(e){
                 this.user = e.detail.value;
             },
+            bindTypeChange(e){
+                this.type = e.detail.value;
+            },
             bindLoc1Change(e){
                 this.loc1 = e.detail.value;
             },
@@ -264,8 +292,8 @@
             addCar(){
                 let that = this;
                 let params = {
-                    order_location:this.loc_data1[this.loc1].location_name,
-                    order_location_type:this.loc_data2[this.loc2].location_name,
+                    order_location:this.type_list[this.type].value ==1 ?this.loc_data1[this.loc1].location_name : this.loc_data2[this.loc2].location_name,
+                    order_location_type:this.type_list[this.type].name,
                     examiner_name:this.user_list[this.user].examiner_name,
                     examiner_telphone:this.user_list[this.user].examiner_telphone,
                     medical_price:this.detail_data.medical_price,

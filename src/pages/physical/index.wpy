@@ -4,7 +4,7 @@
             <view class="m-title-name">我要体检</view>
         </view>
         <view class="m-physical-list">
-            <view class="m-one-physical" wx:for="{{user_list}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
+            <view class="m-one-physical" @tap="questionnaireClick({{item}})" wx:for="{{user_list}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
                 <image src="../../images/icon-woman.png" wx:if="{{item.examiner_sex == '女'}}"></image>
                 <image src="../../images/icon-man.png" wx:else></image>
                 <span>{{item.examiner_name}}</span>
@@ -67,6 +67,11 @@
             changeRoute(sex){
                 wx.navigateTo({
                   url: '/pages/physical/addPhysical?examiner_sex=' + sex
+                });
+            },
+            questionnaireClick(item){
+                wx.navigateTo({
+                    url: '/pages/physical/questionnaire?examiner_id='+item.examiner_id +'&examiner_name='+item.examiner_name
                 });
             }
         }
