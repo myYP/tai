@@ -35,6 +35,7 @@ page{
           'pages/index/detail',
           'pages/index/playOrder',
           'pages/index/physicalList',
+          'pages/index/card',
           'pages/personal/login',
           'pages/personal/orderList',
           'pages/personal/orderDetail',

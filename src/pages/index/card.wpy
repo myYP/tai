@@ -8,9 +8,6 @@
                 </view>
                 <view class="m-search-btn" @tap="codeAdd">兑换</view>
             </view>
-            <view class="m-navList">
-                <view class="m-nav {{item.active? 'active':''}}" @tap="changeNav({{index}})"  wx:for="{{nav}}" wx:for-index="index" wx:key="index"  wx:for-item="item">{{item.name}}</view>
-            </view>
         </view>
         <view class="m-content">
             <view class="m-one-content" wx:for="{{list_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
@@ -40,32 +37,12 @@
     import wepy from 'wepy';
     import api from '../../api/api';
     import tip from '../../utils/tip';
-    export default class coupons extends wepy.page {
+    export default class card extends wepy.page {
         config = {
-            navigationBarTitleText: '满减券'
+            navigationBarTitleText: '兑换满减券'
         }
         data = {
-            can_use:[],
-            have_use:[],
-            no_use:[],
             list_data:[],
-            nav:[
-                {
-                    name:'可使用',
-                    active:true,
-                    value:'can_use'
-                },
-                {
-                    name:'已使用',
-                    active:false,
-                    value:'no_use'
-                },
-                {
-                    name:'已失效',
-                    active:false,
-                    value:'have_use'
-                }
-            ],
             cardno_no:''
         }
         getCard(token) {
@@ -80,21 +57,7 @@
                     'content-type': 'application/json' // 默认值
                 },
                 success: function(res) {
-                    let arr = res.data.data;
-                    let can = [],no=[],have=[];
-                    for(let i=0;i<arr.length;i++){
-                        if(arr[i].card_status == '可用'){
-                            can.push(arr[i])
-                        }else if(arr[i].card_status == '已使用'){
-                            no.push(arr[i])
-                        }else{
-                            have.push(arr[i])
-                        }
-                    }
-                    that.can_use = [].concat(can);
-                    that.no_use = [].concat(no);
-                    that.have_use = [].concat(have);
-                    that.list_data = [].concat(can);
+                    that.list_data = [].concat(res.data.data);
                     that.$apply();
                     tip.loaded();
                 },
@@ -148,33 +111,6 @@
                     }
                 });
 
-            },
-            changeNav(index){
-                if(this.nav[index].active){
-                    return false;
-                }else{
-                    let arr = [].concat(this.nav);
-                    for(let i=0;i<arr.length;i++){
-                        arr[i].active = false;
-                    }
-                    arr[index].active = true;
-                    this.nav = [].concat(arr);
-                    let value = arr[index].value;
-                    // switch (value){
-                    //     case 'can_use':
-                    //
-                    //         console.log(this.list_data,this.can_use);
-                    //         break;
-                    //     case 'no_use':
-                    //         this.list_data = this.no_use;
-                    //         break;
-                    //     case 'have_use':
-                    //         this.list_data = this.have_use;
-                    //         break;
-                    // }
-                    this.list_data = [].concat(this[arr[index].value]);
-                    this.$apply();
-                }
             },
             goList(item){
                 wx.navigateTo({

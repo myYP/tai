@@ -172,7 +172,7 @@
       </block>
     </swiper>
 
-    <view class="m-title-page">
+    <view class="m-title-page" @tap="goCard">
       <image src="../../images/icon-title-bc.png" class="m-title-back"></image>
       <view class="m-title">兑换满减券</view>
     </view>
@@ -387,6 +387,11 @@
         goQuestionnaire(){
             wx.navigateTo({
                 url: '/pages/physical/questionnaire'
+            });
+        },
+        goCard(){
+            wx.navigateTo({
+                url: '/pages/index/card'
             });
         },
         upper(e) {
