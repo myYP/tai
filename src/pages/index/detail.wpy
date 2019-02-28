@@ -101,7 +101,13 @@
                 </scroll-view>
             </view>
         </view>
-
+        <view class="m-modal-promit" wx:if="{{show_promit}}">
+            <view class="m-modal-state">
+                <view class="m-success-text">当前并未选择用户</view>
+                <view class="m-btn" @tap="cancelModel">选择用户</view>
+                <view class="m-btn" @tap="goReturn">添加体检用户</view>
+            </view>
+        </view>
         <view class="m-detail-btn" >
             <span @tap="addCar">加入购物车</span>
             <span class="now-buy" @tap="toBuy">立即购买</span>
@@ -147,7 +153,8 @@
                     value:2
                 }
             ],
-            type:0
+            type:0,
+            show_promit:false
         }
         getDetail(id) {
             let that = this;
@@ -250,6 +257,19 @@
         }
         methods = {
             toBuy(){
+                if(!this.user_list[this.user].examiner_name){
+                    this.show_promit = true;
+                    return false;
+                }
+                if(this.type_list[this.type].value ==1 ){
+                    if(!this.loc_data1[this.loc1]){
+                        tip.error('没有可以选择的定点医院');
+                        return false;
+                    }else if(!this.loc_data2[this.loc2]){
+                        tip.error('没有可以选择的直营门店');
+                        return false;
+                    }
+                }
                 let params = [{
                     order_location:this.loc_data1[this.loc1].location_name,
                     order_location_type:this.loc_data2[this.loc2].location_name,
@@ -301,6 +321,10 @@
                         return false;
                     }
                 }
+                if(!this.user_list[this.user].examiner_name){
+                    this.show_promit = true;
+                    return false;
+                }
                 let params = {
                     order_location:this.type_list[this.type].value ==1 ?this.loc_data1[this.loc1].location_name : this.loc_data2[this.loc2].location_name,
                     order_location_type:this.type_list[this.type].name,
@@ -335,6 +359,14 @@
                         })
                     }
                 });
+            },
+            goReturn(){
+                wx.switchTab({
+                    url: '/pages/physical/index'
+                });
+            },
+            cancelModel(){
+                this.show_promit = false;
             }
         }
     }
@@ -467,6 +499,51 @@
                     .m-icon-select{
                         width: 34rpx;
                         height: 34rpx;
+                    }
+                }
+            }
+        }
+        .m-modal-promit{
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0,0,0,0.2);
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            .m-modal-state{
+                width:500rpx;
+                height:400rpx;
+                background:rgba(255,255,255,1);
+                box-shadow:0px 3rpx 20rpx rgba(0,0,0,0.16);
+                border-radius:20px;
+                display: flex;
+                flex-flow: column;
+                align-items: center;
+                justify-content: center;
+                image{
+                    width: 120rpx;
+                    height: 120rpx;
+                }
+                .m-success-text{
+                    color: #90ADB4;
+                    margin: 20rpx 0 30rpx;
+                }
+                .m-btn{
+                    width: 300rpx;
+                    height: 50rpx;
+                    border: 1rpx solid #D9D9D9;
+                    border-radius: 25rpx;
+                    line-height: 50rpx;
+                    text-align: center;
+                    margin-bottom: 20rpx;
+                    &.active{
+                        color: #D8000D;
                     }
                 }
             }

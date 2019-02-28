@@ -164,16 +164,29 @@
                 },
                 success: function(responsse) {
                     wx.requestPayment({
-                        timeStamp: '',
-                        nonceStr: '',
-                        package: '',
-                        signType: 'MD5',
-                        paySign: '',
-                        success(res) { },
-                        fail(res) { }
+                        timeStamp: String(responsse.data.timeStamp),
+                        nonceStr:responsse.data.nonceStr,
+                        package: responsse.data.package,
+                        signType: responsse.data.signType,
+                        paySign: responsse.data.paySign,
+                        success(res) {
+                            tip.success("支付成功");
+                            setTimeout( () => {
+                                wepy.navigateTo({
+                                    url: '/pages/personal/orderList'
+                                })
+                            }, 1000)
+                        },
+                        fail(res) {
+                            tip.error("支付失败")
+                            setTimeout( () => {
+                                wepy.navigateTo({
+                                    url: '/pages/personal/orderList'
+                                })
+                            }, 1000)
+                        }
                     })
                     that.$apply();
-                    tip.success(responsse.data.message);
                 },
                 error:function (error) {
                     tip.loaded();

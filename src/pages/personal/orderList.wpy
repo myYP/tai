@@ -46,7 +46,7 @@
                 {
                     name:'已付款',
                     active:false,
-                    value:'已寄出'
+                    value:'已支付'
                 },
                 {
                     name:'已寄出',
@@ -103,6 +103,7 @@
                 }
             })
         }
+
         onLoad(){
             var _this = this;
             wx.getStorage({
@@ -113,6 +114,7 @@
             });
         }
         methods = {
+
             //到详情页
             changeRoute(item){
                 wx.navigateTo({
