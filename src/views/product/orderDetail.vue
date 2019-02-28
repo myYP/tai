@@ -81,7 +81,7 @@
         </el-table-column>
       </el-table>
       <p class="m-order-text">订单共1件商品，总计：{{allData.order_price}}</p>
-      <div class="m-bottom m-flex-center" v-if="list[2].active">
+      <div class="m-bottom m-flex-center" v-if="list[3].active">
         <span class="m-box">
             <span class="m-btn">上传报告</span>
             <input type="file" name="file" @change="uploadPdf" class="m-export-btn" id="main"/>
@@ -173,7 +173,7 @@
         },
         changeStatus(){
           let params = {},update_type=1;
-          if(this.list[2].active){
+          if(this.list[3].active){
             if(!this.order_pdf){
               this.$message({
                 type: 'error',
@@ -185,6 +185,8 @@
             update_type = 4
           }else if(this.list[1].active){
             update_type = 6
+          }else if(this.list[2].active){
+            update_type = 3
           }else{
             if(!this.allData.order_user_send){
               this.$message({
