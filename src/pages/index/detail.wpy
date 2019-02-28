@@ -40,7 +40,7 @@
             <image src="{{item}}" class="m-detail-img" wx:for="{{detail_data.medical_message}}" wx:for-index="index" wx:key="index"  wx:for-item="item"></image>
         </view>
 
-        <view class="m-modal" wx:if="{{show_modal}}" bindtouchstart='touchStart' bindtouchend="touchEnd">
+        <view class="m-modal" wx:if="{{show_modal}}" catchtouchmove="true" bindtouchstart='touchStart' bindtouchend="touchEnd">
             <view class="m-modal-state">
                 <view class="m-detail-info">
                     <image src="{{detail_data.medical_pic[0]}}" class="m-modal-detail-img"></image>
@@ -292,6 +292,15 @@
             //添加到购物车
             addCar(){
                 let that = this;
+                if(this.type_list[this.type].value ==1 ){
+                    if(!this.loc_data1[this.loc1]){
+                        tip.error('没有可以选择的定点医院');
+                        return false;
+                    }else if(!this.loc_data2[this.loc2]){
+                        tip.error('没有可以选择的直营门店');
+                        return false;
+                    }
+                }
                 let params = {
                     order_location:this.type_list[this.type].value ==1 ?this.loc_data1[this.loc1].location_name : this.loc_data2[this.loc2].location_name,
                     order_location_type:this.type_list[this.type].name,
