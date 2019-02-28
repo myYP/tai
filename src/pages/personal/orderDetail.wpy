@@ -241,7 +241,7 @@
             lookReport(){
                 let that = this;
                 wx.navigateTo({
-                    url: '/pages/index/physicalList?order_pdf='+that.detail_info.order_pdf
+                    url: '/pages/index/report?order_pdf='+that.detail_info.order_pdf
                 });
             }
         }
