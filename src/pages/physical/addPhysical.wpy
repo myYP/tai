@@ -70,6 +70,13 @@
             },
             onSubmit(){
                 let that = this;
+                if(!that.examiner_name){
+                    tip.error('请先填写姓名');
+                    return false;
+                }else  if(!that.examiner_telphone){
+                    tip.error('请先填写联系方式');
+                    return false;
+                }
                 wx.getStorage({
                     key: 'token',
                     success: function(res){

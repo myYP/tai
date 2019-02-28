@@ -4,7 +4,7 @@
             <!--<view class="m-one-car">-->
                 <view class="m-one-car touch-item {{item.isTouchMove ? 'touch-move-active' : ''}}" data-index="{{index}}" bindtouchstart="touchstart" bindtouchmove="touchmove" wx:for="{{items}}" wx:key="">
                     <view class="content">
-                        <view class="m-product" >
+                        <view class="m-product" @tap="productClick({{item}})">
                             <image src="../../images/icon-radio.png" wx:if="{{!item.click}}" @tap="changeRadio({{index}})" class="m-icon-radio"/>
                             <image src="../../images/icon-radio-active.png" wx:else @tap="changeRadio({{index}})" class="m-icon-radio"/>
                             <view class="m-one-car-product">
@@ -237,6 +237,13 @@
                 wx.navigateTo({
                     url: '/pages/index/playOrder?params='+ JSON.stringify( params )
                 });
+            },
+            productClick(item){
+                let that = this;
+                wx.navigateTo({
+                    url: '/pages/index/detail?medical_id=' + item.medical_id + '&examiner_id=' +that.examiner_id
+                });
+
             }
         }
     }

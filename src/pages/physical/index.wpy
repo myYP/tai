@@ -39,13 +39,13 @@
         data = {
             user_list:[]
         }
-        getUserList() {
+        getUserList(token) {
             let that = this;
             tip.loading();
             wx.request({
                 url: api.get_my_medical_user, //仅为示例，并非真实的接口地址
                 data: {
-                   token:'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
+                   token:token
                 },
                 header: {
                     'content-type': 'application/json' // 默认值
@@ -60,8 +60,15 @@
                 }
             })
         }
-        onLoad(options){
-            this.getUserList();
+        onShow(options){
+            var _this = this;
+            wx.getStorage({
+                key: 'token',
+                success: function(res){
+                    _this.getUserList(res.data);
+                }
+            });
+
         }
         methods = {
             changeRoute(sex){
