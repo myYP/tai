@@ -313,8 +313,12 @@
                                 'content-type': 'application/json' // 默认值
                             },
                             success: function(responsse) {
-                                that.$apply();
-                                tip.success(responsse.data.message);
+                                if(responsse.data.status == 200){
+                                    that.$apply();
+                                    tip.success(responsse.data.message);
+                                }else{
+                                    tip.error(responsse.data.message);
+                                }
                             },
                             error:function (error) {
                                 tip.loaded();
