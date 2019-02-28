@@ -248,7 +248,7 @@
     >
       <block wx:for="{{scroll_data}}" wx:key="item">
         <swiper-item>
-          <image src="{{item.loadpic_pic}}" class="slide-image" style="width: 750rpx;height: 300rpx;" />
+          <image src="{{item.loadpic_pic}}" @tap="imgTap({{item.loadpic_url}})" class="slide-image" style="width: 750rpx;height: 300rpx;" />
         </swiper-item>
       </block>
     </swiper>
@@ -583,6 +583,11 @@
         cancelSearch(){
             this.search_value = '';
             this.show_search = false;
+        },
+        imgTap(item){
+            wx.navigateTo({
+                url: item
+            })
         }
     }
   }

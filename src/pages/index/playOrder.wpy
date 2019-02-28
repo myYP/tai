@@ -163,6 +163,15 @@
                     'content-type': 'application/json' // 默认值
                 },
                 success: function(responsse) {
+                    wx.requestPayment({
+                        timeStamp: '',
+                        nonceStr: '',
+                        package: '',
+                        signType: 'MD5',
+                        paySign: '',
+                        success(res) { },
+                        fail(res) { }
+                    })
                     that.$apply();
                     tip.success(responsse.data.message);
                 },
