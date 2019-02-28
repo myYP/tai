@@ -128,7 +128,7 @@
             <view class="content">
                 <image class="avatar" src="{{user_info.user_icon}}" />
                 <view class="name">{{user_info.user_name}}</view>
-                <image src="../../images/icon-set.png" class="m-icon-set"></image>
+                <!--<image src="../../images/icon-set.png" class="m-icon-set"></image>-->
             </view>
         </view>
         <view class="m-personal-content">
