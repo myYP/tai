@@ -29,7 +29,7 @@ page{
   export default class extends wepy.app {
     config = {
       pages: [
-
+          'pages/personal/login',
           'pages/index/index',
           'pages/personal/index',
           'pages/index/detail',
@@ -37,7 +37,7 @@ page{
           'pages/index/physicalList',
           'pages/index/card',
           'pages/index/report',
-          'pages/personal/login',
+
           'pages/personal/orderList',
           'pages/personal/orderDetail',
           'pages/personal/car',
@@ -99,10 +99,10 @@ page{
 
 
       onLaunch() {
-          wx.setStorage({
-              'key':'token',
-              'data':'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
-          });
+          // wx.setStorage({
+          //     'key':'token',
+          //     'data':'ZDk5ODBiNzgtMzM2MC0xMWU5LTk0NjAtNTgwMGUzMTE5ZDRhIzIwMTktMDItMTggMTc6Mzc6NDc='
+          // });
       }
 
     sleep (s) {
