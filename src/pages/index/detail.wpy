@@ -43,11 +43,10 @@
         <view class="m-modal" wx:if="{{show_modal}}" bindtouchstart='touchStart' bindtouchend="touchEnd">
             <view class="m-modal-state">
                 <view class="m-detail-info">
-                    <image src="../../images/swide.png" class="m-modal-detail-img"></image>
+                    <image src="{{detail_data.medical_pic[0]}}" class="m-modal-detail-img"></image>
                     <view class="m-modal-detail-info">
-                        <view class="m-detail-h">体检项目体检项目体检项目体检项目
-                            体检项目体检项目体检项目体检项目</view>
-                        <view class="m-red">￥1688.0</view>
+                        <view class="m-detail-h">{{detail_data.medical_name}}</view>
+                        <view class="m-red">￥{{detail_data.medical_price}}</view>
                     </view>
                 </view>
                 <scroll-view
