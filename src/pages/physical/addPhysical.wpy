@@ -21,6 +21,7 @@
             </view>
             <picker
                     mode="date"
+                    fields="month"
                     value="{{examiner_birth}}"
                     bindchange="bindDateChange"
             >
@@ -45,20 +46,19 @@
         data = {
             examiner_name:'',
             examiner_telphone:'',
-            examiner_birth: '2016-09-01',
+            examiner_birth: '2016-09',
             examiner_sex:''
         }
         onLoad(options){
             this.examiner_sex = options.examiner_sex;
             let myDate = new Date();
-            this.examiner_birth = myDate.getFullYear() + '-' + (myDate.getMonth() + 1);
+            this.examiner_birth = myDate.getFullYear() + '-' + ((myDate.getMonth() + 1)<10?'0'+ (myDate.getMonth() + 1):(myDate.getMonth() + 1));
         }
         methods = {
             bindDateChange(e) {
                 console.log('picker发送选择改变，携带值为', e.detail.value)
-                this.setData({
-                    examiner_birth: e.detail.value
-                })
+                this.examiner_birth = e.detail.value
+
             },
             bindTelInput(e) {
                 this.examiner_telphone = e.detail.value

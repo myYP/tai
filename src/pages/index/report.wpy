@@ -1,6 +1,6 @@
 <template>
     <view class="m-report">
-        <view class="m-btn" @tap="download">下载报告</view>
+        <view class="m-btn" @tap="downloadPdf">下载报告</view>
     </view>
 </template>
 <script>
@@ -10,22 +10,34 @@
         config = {
             navigationBarTitleText: '体检报告'
         }
-        data = {}
+        data = {
+            order_pdf:''
+        }
+        onLoad(options){
+            this.order_pdf = options.order_pdf
+        }
         methods = {
-            download(){
+            downloadPdf(){
+                let that = this;
                 wx.downloadFile({
                     // 示例 url，并非真实存在
-                    url: 'https://developers.weixin.qq.com/miniprogram/dev/api/wx.openDocument.html',
+                    url: that.order_pdf,
                     success(res) {
                         const filePath = res.tempFilePath
                         wx.openDocument({
                             filePath,
                             success(res) {
                                 console.log('打开文档成功')
+                            },
+                            fail(error){
+
                             }
                         })
                     },
-                    error(){
+                    fail(error){
+                       console.log(error)
+                    },
+                    complete(error){
 
                     }
                 })
