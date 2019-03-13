@@ -127,9 +127,6 @@
             detail_data:null,
             show_modal:false,
             imgUrls: [
-                '../../images/swide.png',
-                '../../images/swide.png',
-                '../../images/swide.png'
             ],
             indicatorDots: true,
             autoplay: false,

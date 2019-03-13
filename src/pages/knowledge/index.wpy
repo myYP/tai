@@ -169,9 +169,6 @@
             science_data:[],
             top_data:[],
             imgUrls: [
-                '../../images/swide.png',
-                '../../images/swide.png',
-                '../../images/swide.png'
             ],
             indicatorDots: true,
             autoplay: false,

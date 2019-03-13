@@ -355,9 +355,6 @@
         medical_data:[],
         science_data:[],
         scroll_data: [
-            '../../images/swide.png',
-            '../../images/swide.png',
-            '../../images/swide.png'
         ],
         indicatorDots: true,
         autoplay: false,
@@ -490,26 +487,6 @@
         this.getScroll();
         this.getTel();
       }
-      // onPullDownRefresh(){
-      //     wx.stopPullDownRefresh();
-      // }
-      // onReachBottom(){
-      //     var _this = this;
-      //     if(_this.page_info.cur_page == _this.page_info.total_pages){
-      //         wx.showToast({ //如果全部加载完成了也弹一个框
-      //             title: '我也是有底线的',
-      //             icon: 'success',
-      //             duration: 300
-      //         });
-      //     }else{
-      //         wx.getStorage({
-      //             key: 'sess_key',
-      //             success: function(res){
-      //                 // _this.getWorkList(res.data,_this.select_city.areano);
-      //             }
-      //         });
-      //     }
-      // }
     methods = {
         changeRoute(){
             wx.navigateTo({

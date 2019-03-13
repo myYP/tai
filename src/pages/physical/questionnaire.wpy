@@ -3,7 +3,7 @@
         <view class="m-one-questionnaire" wx:for="{{list_data}}" wx:for-index="index" wx:key="index"  wx:for-item="item">
             <view class="m-wen">
                 <image src="../../images/icon-wen.png"></image>
-                <span>{{index +1}}.{{item.question_title}}</span>
+                <span style="width: 300px;">{{index +1}}.{{item.question_title}}</span>
             </view>
             <view class="m-da">
                 <image src="../../images/icon-da.png"></image>
@@ -31,8 +31,8 @@
             <view class="m-modal-state">
                 <image src="../../images/icon-success.png"></image>
                 <view class="m-success-text">提交成功</view>
-                <view class="m-btn active" @tap="toProduct">预约体检</view>
-                <view class="m-btn" @tap="goReturn">继续添加体检用户</view>
+                <view class="m-btn active" @tap.stop="toProduct">预约体检</view>
+                <view class="m-btn" @tap.stop="goReturn">继续添加体检用户</view>
             </view>
         </view>
     </view>
@@ -208,6 +208,7 @@
             flex-flow: column;
             align-items: center;
             justify-content: center;
+            z-index:10000;
             .m-modal-state{
                 width:500rpx;
                 height:400rpx;
