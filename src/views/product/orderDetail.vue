@@ -30,9 +30,9 @@
               </p>
               <div class="m-step-box m-flex-between">
                 <step :list="list"></step>
-                <span class="m-btn" v-if="!(list[0].active && !list[1].active)" @click="changeStatus">提交进度</span>
+                <span class="m-btn" v-if="allData.order_status !='未支付' && !(list[0].active && !list[1].active)" @click="changeStatus">提交进度</span>
               </div>
-              <el-form :inline="true" :model="allData" class="demo-form-inline">
+              <el-form :inline="true" :model="allData" v-if="allData.order_status !='未支付'" class="demo-form-inline">
                 <el-form-item label="寄样人">
                   <el-input v-model="allData.order_user_send" placeholder="" :disabled="list[0].active"></el-input>
                 </el-form-item>

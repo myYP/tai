@@ -3,7 +3,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px" label-position="left">
         <el-form-item label="问题:" prop="question_title">
           <el-input v-model="form.question_title" class="m-input-l"></el-input>
-          <p class="m-alert-text">建议问题文字在x字以内</p>
+          <p class="m-alert-text">建议问题文字在50字以内</p>
         </el-form-item>
 
 
@@ -16,6 +16,7 @@
         </el-form-item>
         <el-form-item label="选项" v-if="form.question_type != 2" v-for="(item,index) in form.question_choose" :key="index">
           <el-input v-model="form.question_choose[index]" class="m-input-xs"></el-input>
+          <img src="../../common/images/icon-cut.png" v-if="index>0" class="m-icon-cut" @click="deleteChoose(index)">
         </el-form-item>
       </el-form>
       <p v-if="form.question_type != 2">
@@ -79,11 +80,11 @@
             this.$refs['form'].validate((valid) => {
               if (valid) {
                 _form = that.form;
-                if(_form.type == '2'){
+                if(_form.question_type == '2'){
                   _form.question_choose = [];
                 }else{
                  for(let i=0;i<_form.question_choose.length;i++){
-                   if(_form.question_choose[i] == ''){
+                   if(_form.question_choose[i] == '' ){
                      this.$notify.error('请填写完整的选项名称');
                      return false;
                    }
@@ -129,6 +130,17 @@
               }
             }
           }
+        },
+        deleteChoose(i){
+
+          this.$confirm('确定删除此选项吗?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.form.question_choose.splice(i,1);
+          }).catch(() => {
+          });
         }
       }
     }
@@ -152,6 +164,13 @@
   .m-alert-text{
     color: #999;
     font-size: 12px;
+  }
+  .m-icon-cut{
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    vertical-align: top;
   }
 }
 </style>

@@ -19,7 +19,7 @@
           <template slot-scope="scope">
             <div class="m-up-img-box" >
               <div class="inputbg m-img-xl el-upload-list--picture-card" v-if="scope.row.loadpic_pic">
-                <img :src="scope.row.loadpic_pic"   style="width: 3.2rem;height:1.2rem;"/>
+                <img :src="scope.row.loadpic_pic"   style="width: 220px;height:120px;"/>
                 <span class="el-upload-list__item-actions" v-if="scope.row.click">
                       <span class="el-upload-list__item-preview" @click="CardPreviewMain(scope.$index)">
                         <i class="el-icon-zoom-in"></i>

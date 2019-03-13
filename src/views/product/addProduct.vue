@@ -27,7 +27,7 @@
             </div>
             <div class="inputbg m-img-xl"><span>+添加图片</span><input type="file" id="main" accept="image/*" @change="imgUploadDetailMain"></div>
           </div>
-          <p class="m-alert-text">建议尺寸：1:1，大小在xmb以内，最多上传5张商品图片</p>
+          <p class="m-alert-text">建议尺寸：1:1，大小在5m以内，最多上传5张商品图片</p>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%"  :src="imageUrl" >
           </el-dialog>
@@ -62,7 +62,7 @@
           >
             <i class="el-icon-plus"></i>
           </el-upload>
-          <p class="m-alert-text">建议尺寸：x*xpx，大小在xmb以内，最多上传x张商品图片</p>
+          <p class="m-alert-text">建议大小在5m以内</p>
           <!--<el-dialog :visible.sync="dialogVisible">-->
           <!--<img width="100%" :src="dialogImageUrl" alt="">-->
           <!--</el-dialog>-->

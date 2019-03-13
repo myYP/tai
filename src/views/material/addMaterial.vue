@@ -5,7 +5,7 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="left">
         <el-form-item label="文章标题：" prop="science_name">
           <el-input v-model="form.science_name"></el-input>
-          <p class="m-alert-text">建议问题文字在x字以内</p>
+          <p class="m-alert-text">建议问题文字在50字以内</p>
         </el-form-item>
         <el-form-item label="文章主图：" prop="science_pic">
           <div class="m-up-img-box" >
@@ -22,7 +22,7 @@
             </div>
             <div class="inputbg m-img-xl"><span>+添加图片</span><input type="file" id="main" accept="image/*" @change="imgUploadDetailMain"></div>
           </div>
-          <p class="m-alert-text">建议尺寸：2:1，大小在xmb以内</p>
+          <p class="m-alert-text">建议尺寸：2:1，大小在5m以内</p>
           <el-dialog :visible.sync="dialogVisible">
             <img width="100%"  :src="imageUrl" >
           </el-dialog>
