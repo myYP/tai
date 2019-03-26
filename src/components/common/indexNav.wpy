@@ -25,6 +25,7 @@
     }
 </script>
 <style scoped lang="less" rel="stylesheet/less">
+    @import "../../styles/common";
     .m-one-content{
         width: 705rpx;
         height: 250rpx;
